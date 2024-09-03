@@ -1,3 +1,7 @@
 kq.gbc
 kq.sav
 kq.sn*
+
+__pycache__/
+python/projutils/tests/
+.venv/
