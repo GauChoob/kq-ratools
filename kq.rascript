@@ -166,6 +166,10 @@ Script_Core_Puzzle2_SecretComplete = bank_address(0x0589F6)
 Script_Bograth_Puzzle2_SecretComplete = bank_address(0x05E796)
 Script_StartRoom_SecretComplete = bank_address(0x061F2A)
 
+// Transition: System can be the first frame of the hotspot
+// Master takes over when SceneNew(), include the value on the first frame that screen is on for safety purposes
+Script_Underneath_Puzzle2_Transition = [bank_address(0x0546D6), bank_address(0x054708)]
+Script_Underneath_Puzzle3_Transition = [bank_address(0x054BDC), bank_address(0x054C0E)]
 //////////
 // WRAM //
 //////////
@@ -205,12 +209,18 @@ for i in range(0, 0x2F) {
     array_push(wActorScriptA, tbyte(wActor_00 + wActor_Size*i + wActor_Offset_ScriptA))
     array_push(wActorScriptB, tbyte(wActor_00 + wActor_Size*i + wActor_Offset_ScriptB))
 }
-wActorTony = 0xC189
-function wActorTonyState() => word(wActorTony + wActor_Offset_State)
-function wActorTonyX() => byte(wActorTony + wActor_Offset_X)
-function wActorTonyY() => byte(wActorTony + wActor_Offset_Y)
-function wActorTonyScriptA() => tbyte(wActorTony + wActor_Offset_ScriptA)
-function wActorTonyScriptB() => tbyte(wActorTony + wActor_Offset_ScriptB)
+wActorSalafy = 0xC189
+wActorSalafyState = word(wActorSalafy + wActor_Offset_State)
+wActorSalafyX = byte(wActorSalafy + wActor_Offset_X)
+wActorSalafyY = byte(wActorSalafy + wActor_Offset_Y)
+wActorSalafyScriptA = tbyte(wActorSalafy + wActor_Offset_ScriptA)
+wActorSalafyScriptB = tbyte(wActorSalafy + wActor_Offset_ScriptB)
+
+//////////
+// SRAM //
+//////////
+
+xBits_Puzzle_Bits1 = 0xA028
 
 //////////
 // Misc //
@@ -224,36 +234,214 @@ function start_screen() =>
     prev(wHotspot_Table) == Hotspot_StartRoom || prev(wHotspot_Table) == 0
 
 function game_loaded() =>
-    booted() && !start_screen() && no_cheat()
+    booted() && no_cheat()
 
-function scene_loaded(hotspot) =>
-    increases(wScreenVisible) && wHotspot_Table == hotspot
-
-function scene_unloaded() =>
-    wScreenVisible == 0
-
+function master(address) =>
+    wScript_Master == address
+function scroll(address) =>
+    wScript_Scroll == address
 function system(address) =>
     wScript_System == address
+function text(address) =>
+    wScript_Text == address
 
 function no_cheat() => wSalafyInvincible == 0
-    
+
+
+/////////////////////////////
+// Puzzle Helper Functions //
+/////////////////////////////
+
+ordinals = {
+    1: "first",
+    2: "second",
+    3: "third",
+    4: "fourth",
+    5: "secret"
+}
+cardinals = {
+    1: "Puzzle 1",
+    2: "Puzzle 2",
+    3: "Puzzle 3",
+    4: "Puzzle 4",
+    5: "Secret Puzzle"
+}
+// "first Underneath puzzle"
+function ordinal(puzzle) =>
+    ordinals[puzzle["level"]] + " " + puzzle["zone"] + " puzzle"
+// "Underneath Puzzle 1"
+function cardinal(puzzle) =>
+    puzzle["zone"] + " " + cardinals[puzzle["level"]]
+
+// The hotspot for the end of the puzzle is activated
+function scene_end(puzzle) =>
+    wHotspot_Table == puzzle["hotspot2"]
+
+// The hotspot for the start of the puzzle is activated and the screen turns on
+function scene_loads(puzzle) =>
+    increases(wScreenVisible) && wHotspot_Table == puzzle["hotspot"]
+
+// Either hotspot for a puzzle is activated
+function in_scenes(puzzle) {
+    if(puzzle["hotspot"] == puzzle["hotspot2"]) {
+        return wHotspot_Table == puzzle["hotspot2"]
+    } else {
+        return __ornext(wHotspot_Table == puzzle["hotspot"] || wHotspot_Table == puzzle["hotspot2"])
+    }
+}
+
+// The screen turns off (the scene ends)
+// Unless there are two hotspots, in which case we permit the screen to be off during the transition
+function scene_unloaded(puzzle) {
+    if(puzzle["hotspot"] == puzzle["hotspot2"]) {
+        return wScreenVisible == 0
+    } else {
+        return (wScreenVisible == 0) && (wScript_System < puzzle["transition"][0] || wScript_System > puzzle["transition"][1]) && (wScript_Master < puzzle["transition"][0] || wScript_Master > puzzle["transition"][1])
+    }
+}
+
+// The Congrats textbox opens at the end of a puzzle
+function puzzle_end(puzzle) =>
+    __ornext(any_of(puzzle["complete"], script => system(script)))
+
+// Count the number of times that the parmalags are triggered
+function parmalags_move(puzzle) =>
+    tally_of(range(0, puzzle["parmalags"] - 1), puzzle["parmalags_move"] + 1, i => bit(i, xBits_Puzzle_Bits1) > prev(bit(i, xBits_Puzzle_Bits1)))
+
+// If Salafy is within the bounds of rectangle
+function salafy_location(x, y, x2, y2) =>
+    wActorSalafyX >= x && wActorSalafyX <= x2 && wActorSalafyY >= y && wActorSalafyY <= y2
 //////////////////
 // Achievements //
 //////////////////
 
+
+puzzles = {}
+
+// hotspot: Scene load hotspot
+// hotspot2: 0, or else hotspot for the second part of the puzzle
+// complete: [Script_Complete, Script_SecretComplete]
+// title, points
+// title2, points2: for challenge achievement
+//
+// speedrun
+// time (string), frames: for speedrun
+//
+// parmalag_avoid
+// parmalags: total number of parmalag actors
+// parmalags_move: maximum number of permitted movements
+
+function add_puzzle(zone, level, object) {
+    key = zone + level
+    puzzles[key] = object
+    puzzles[key]["zone"] = zone
+    puzzles[key]["level"] = level
+    if(puzzles[key]["hotspot2"] == 0) {
+        puzzles[key]["hotspot2"] = puzzles[key]["hotspot"]
+    }
+}
+add_puzzle("Underneath", 1, {
+    "hotspot": Hotspot_Underneath_Puzzle1,
+    "hotspot2": 0,
+    "complete": [Script_Underneath_Puzzle1_Complete],
+    "title": "World 1-1",
+    "points": 1,
+    "title2": "Off to a Great Start",
+    "points2": 1,
+    "time": "7.00",
+    "frames": 7*60 - 1
+})
+add_puzzle("Underneath", 2, {
+    "hotspot": Hotspot_Underneath_Puzzle2,
+    "hotspot2": Hotspot_Underneath_Puzzle4,
+    "transition": Script_Underneath_Puzzle2_Transition,
+    "complete": [Script_Underneath_Puzzle2_Complete],
+    "title": "Parmalag Ball",
+    "points": 1,
+    "title2": "Efficient Steps",
+    "points2": 1,
+    "parmalags": 5,
+    "parmalags_move": 4,
+})
+add_puzzle("Underneath", 3, {
+    "hotspot": Hotspot_Underneath_Puzzle3,
+    "hotspot2": Hotspot_Underneath_Puzzle4,
+    "transition": Script_Underneath_Puzzle3_Transition,
+    "complete": [Script_Underneath_Puzzle3_Complete],
+    "title": "Parmalag Implosion",
+    "points": 1,
+    "title2": "Panic Run",
+    "points2": 1,
+    "time": "5.00",
+    "frames": 5*60 - 1
+})
+add_puzzle("Underneath", 4, {
+    "hotspot": Hotspot_Underneath_Puzzle4,
+    "hotspot2": 0,
+    "complete": [Script_Underneath_Puzzle4_Complete, Script_Underneath_Puzzle4_SecretComplete],
+    "title": "Digging Out",
+    "points": 1,
+    "title2": "Exploration",
+    "points2": 1,
+    "desc2": "Head to the bottom-right corner of the puzzle, then turn around and finish the puzzle in the top-right corner",
+})
+
+function puzzle(name) {
+    puz = puzzles[name]
+    achievement(
+        title = puz["title"],
+        points = puz["points"],
+        description = "Complete the " + ordinal(puz),
+        trigger = game_loaded() && scene_end(puz) && __ornext(any_of(puz["complete"], script => system(script)))
+    )
+}
+function timeboard(name) {
+    puz = puzzles[name]
+    leaderboard(
+        title = cardinal(puz),
+        description = "Fastest time in the " + ordinal(puz),
+        start = game_loaded() && scene_loads(puz),
+        cancel = scene_unloaded(puz),
+        submit = puzzle_end(puz),
+        value = always_true(),
+        format = "FRAMES",
+        lower_is_better = true
+    )
+}
+function speedrun(name) {
+    puz = puzzles[name]
+    achievement(
+        title = puz["title2"],
+        points = puz["points2"],
+        description = "Challenge: Complete the " + ordinal(puz) + " in under " + puz["time"] + " seconds",
+        trigger = game_loaded() && in_scenes(puz) && disable_when(repeated(puz["frames"], always_true()), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
+    )
+}
+function parmalag_avoid(name) {
+    puz = puzzles[name]
+    achievement(
+        title = puz["title2"],
+        points = puz["points2"],
+        description = "Challenge: Complete the " + ordinal(puz) + " without triggering Parmalags more than " + puz["parmalags_move"] + " times",
+        trigger = game_loaded() && in_scenes(puz) && disable_when(parmalags_move(puz), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
+    )
+}
+puzzle("Underneath1")
+timeboard("Underneath1")
+speedrun("Underneath1")
+puzzle("Underneath2")
+timeboard("Underneath2")
+parmalag_avoid("Underneath2")
+puzzle("Underneath3")
+timeboard("Underneath3")
+speedrun("Underneath3")
+puzzle("Underneath4")
+timeboard("Underneath4")
+puz = puzzles["Underneath4"]
 achievement(
-    title = "Underneath 1", points = 1,
-    description = "Complete Underneath 1",
-    trigger = game_loaded() && system(Script_Underneath_Puzzle1_Complete)
-)
-leaderboard(
-    title = "Underneath Puzzle 1",
-    description = "Fastest time in Underneath Puzzle 1",
-    start = game_loaded() && scene_loaded(Hotspot_Underneath_Puzzle1),
-    cancel = scene_unloaded(),
-    submit = system(Script_Underneath_Puzzle1_Complete),
-    value = always_true(),
-    format = "FRAMES",
-    lower_is_better = true
+    title = puz["title2"],
+    points = puz["points2"],
+    description = "Challenge: " + puz["desc2"],
+    trigger = game_loaded() && in_scenes(puz) && never(scene_unloaded(puz)) && once(salafy_location(0x04, 0x05, 0x0C, 0x07)) && trigger_when(puzzle_end(puz))
 )
 
