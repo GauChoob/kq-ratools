@@ -164,6 +164,7 @@ Script_Underneath_Puzzle4_SecretComplete = bank_address(0x055537)
 Script_Paradwyn_Puzzle3_SecretComplete = bank_address(0x056B7F)
 Script_Core_Puzzle2_SecretComplete = bank_address(0x0589F6)
 Script_Bograth_Puzzle2_SecretComplete = bank_address(0x05E796)
+Script_Cald_Puzzle2_SecretComplete = bank_address(0x063205)
 Script_StartRoom_SecretComplete = bank_address(0x061F2A)
 
 // Transition: System can be the first frame of the hotspot
@@ -305,12 +306,23 @@ function puzzle_end(puzzle) =>
     __ornext(any_of(puzzle["complete"], script => system(script)))
 
 // Count the number of times that the parmalags are triggered
+// parmalags: total number of parmalag actors
+// parmalags_move: maximum number of permitted movements
 function parmalags_move(puzzle) =>
     tally_of(range(0, puzzle["parmalags"] - 1), puzzle["parmalags_move"] + 1, i => bit(i, xBits_Puzzle_Bits1) > prev(bit(i, xBits_Puzzle_Bits1)))
 
+// Count the number of times that the arbolits are triggered
+// arbolits: total number of arbolit actors
+// arbolits_first: the bit offset of the first actor
+// arbolits_move: maximum number of permitted movements
+function arbolits_move(puzzle) =>
+    tally_of(range(0, puzzle["arbolits"] - 1), puzzle["arbolits_move"] + 1, i => bit(i + puzzle["arbolits_first"], xBits_Puzzle_Bits1) > prev(bit(i + puzzle["arbolits_first"], xBits_Puzzle_Bits1)))
+
 // If Salafy is within the bounds of rectangle
-function salafy_location(x, y, x2, y2) =>
-    wActorSalafyX >= x && wActorSalafyX <= x2 && wActorSalafyY >= y && wActorSalafyY <= y2
+// x, y: topleft
+// x2, y2: bottomright
+function salafy_location(puzzle) =>
+    wActorSalafyX >= puzzle["x"] && wActorSalafyX <= puzzle["x2"] && wActorSalafyY >= puzzle["y"] && wActorSalafyY <= puzzle["y2"]
 //////////////////
 // Achievements //
 //////////////////
@@ -327,9 +339,7 @@ puzzles = {}
 // speedrun
 // time (string), frames: for speedrun
 //
-// parmalag_avoid
-// parmalags: total number of parmalag actors
-// parmalags_move: maximum number of permitted movements
+
 
 function add_puzzle(zone, level, object) {
     key = zone + level
@@ -347,7 +357,7 @@ add_puzzle("Underneath", 1, {
     "title": "World 1-1",
     "points": 1,
     "title2": "Off to a Great Start",
-    "points2": 1,
+    "points2": 2,
     "time": "7.00",
     "frames": 7*60 - 1
 })
@@ -359,7 +369,7 @@ add_puzzle("Underneath", 2, {
     "title": "Parmalag Ball",
     "points": 1,
     "title2": "Efficient Steps",
-    "points2": 1,
+    "points2": 3,
     "parmalags": 5,
     "parmalags_move": 4,
 })
@@ -371,7 +381,7 @@ add_puzzle("Underneath", 3, {
     "title": "Parmalag Implosion",
     "points": 1,
     "title2": "Panic Run",
-    "points2": 1,
+    "points2": 2,
     "time": "5.00",
     "frames": 5*60 - 1
 })
@@ -380,10 +390,59 @@ add_puzzle("Underneath", 4, {
     "hotspot2": 0,
     "complete": [Script_Underneath_Puzzle4_Complete, Script_Underneath_Puzzle4_SecretComplete],
     "title": "Digging Out",
-    "points": 1,
+    "points": 3,
     "title2": "Exploration",
-    "points2": 1,
+    "points2": 3,
     "desc2": "Head to the bottom-right corner of the puzzle, then turn around and finish the puzzle in the top-right corner",
+    "x": 0x1A,
+    "y": 0x13,
+    "x2": 0x1C,
+    "y2": 0x17
+})
+add_puzzle("Underneath", 5, {
+    "hotspot": Hotspot_Underneath_Puzzle5,
+    "hotspot2": 0,
+    "complete": [Script_Underneath_Puzzle5_Complete],
+    "title": "Secret Mission",
+    "points": 3,
+    "title2": "Brainiac",
+    "points2": 4,
+    "parmalags": 11,
+    "parmalags_move": 11,
+})
+add_puzzle("Cald", 1, {
+    "hotspot": Hotspot_Cald_Puzzle1,
+    "hotspot2": 0,
+    "complete": [Script_Cald_Puzzle1_Complete],
+    "title": "Getting Hot",
+    "points": 1,
+    "title2": "Sweating It Out",
+    "points2": 2,
+    "time": "10.00",
+    "frames": 10*60 - 1
+})
+add_puzzle("Cald", 2, {
+    "hotspot": Hotspot_Cald_Puzzle2,
+    "hotspot2": 0,
+    "complete": [Script_Cald_Puzzle2_Complete, Script_Cald_Puzzle2_SecretComplete],
+    "title": "Valkan's Arbolits",
+    "points": 1,
+    "title2": "Valkan's ArboLit!",
+    "points2": 2,
+    "time": "7.00",
+    "frames": 7*60 - 1
+})
+add_puzzle("Cald", 3, {
+    "hotspot": Hotspot_Cald_Puzzle3,
+    "hotspot2": 0,
+    "complete": [Script_Cald_Puzzle3_Complete],
+    "title": "Button Masher",
+    "points": 1,
+    "title2": "Button Clicker",
+    "points2": 2,
+    "arbolits_first": 1,
+    "arbolits": 10,
+    "arbolits_move": 10
 })
 
 function puzzle(name) {
@@ -426,6 +485,25 @@ function parmalag_avoid(name) {
         trigger = game_loaded() && in_scenes(puz) && disable_when(parmalags_move(puz), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
     )
 }
+function arbolits_avoid(name) {
+    puz = puzzles[name]
+    achievement(
+        title = puz["title2"],
+        points = puz["points2"],
+        description = "Challenge: Complete the " + ordinal(puz) + " without triggering Arbolits more than " + puz["arbolits_move"] + " times",
+        trigger = game_loaded() && in_scenes(puz) && disable_when(arbolits_move(puz), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
+    )
+}
+function enter_box(name) {
+    puz = puzzles[name]
+    achievement(
+        title = puz["title2"],
+        points = puz["points2"],
+        description = "Challenge: " + puz["desc2"],
+        trigger = game_loaded() && in_scenes(puz) && never(scene_unloaded(puz)) && once(salafy_location(puz)) && trigger_when(puzzle_end(puz))
+    )
+    
+}
 puzzle("Underneath1")
 timeboard("Underneath1")
 speedrun("Underneath1")
@@ -437,11 +515,16 @@ timeboard("Underneath3")
 speedrun("Underneath3")
 puzzle("Underneath4")
 timeboard("Underneath4")
-puz = puzzles["Underneath4"]
-achievement(
-    title = puz["title2"],
-    points = puz["points2"],
-    description = "Challenge: " + puz["desc2"],
-    trigger = game_loaded() && in_scenes(puz) && never(scene_unloaded(puz)) && once(salafy_location(0x04, 0x05, 0x0C, 0x07)) && trigger_when(puzzle_end(puz))
-)
-
+enter_box("Underneath4")
+puzzle("Underneath5")
+timeboard("Underneath5")
+parmalag_avoid("Underneath5")
+puzzle("Cald1")
+timeboard("Cald1")
+speedrun("Cald1")
+puzzle("Cald2")
+timeboard("Cald2")
+speedrun("Cald2")
+puzzle("Cald3")
+timeboard("Cald3")
+arbolits_avoid("Cald3")
