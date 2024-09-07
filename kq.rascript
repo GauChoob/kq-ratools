@@ -190,6 +190,10 @@ wScreenVisible = byte(0xC959)
 
 wSalafyInvincible = byte(0xC9CB)
 
+wScript_StartButtonDisabled = byte(0xC731)
+function start_button_enabled() =>
+    wScript_StartButtonDisabled == 0
+
 // Build the wActor array
 wActorState = []
 wActorX = []
@@ -216,6 +220,7 @@ wActorSalafyX = byte(wActorSalafy + wActor_Offset_X)
 wActorSalafyY = byte(wActorSalafy + wActor_Offset_Y)
 wActorSalafyScriptA = tbyte(wActorSalafy + wActor_Offset_ScriptA)
 wActorSalafyScriptB = tbyte(wActorSalafy + wActor_Offset_ScriptB)
+
 
 //////////
 // SRAM //
@@ -279,8 +284,15 @@ function scene_end(puzzle) =>
     wHotspot_Table == puzzle["hotspot2"]
 
 // The hotspot for the start of the puzzle is activated and the screen turns on
-function scene_loads(puzzle) =>
-    increases(wScreenVisible) && wHotspot_Table == puzzle["hotspot"]
+function scene_loads(puzzle) {
+    if(puzzle["level"] == 5) {
+        // Disable triggering on the secret cutscene as these scenes do not load any hotspots
+        return increases(wScreenVisible) && wHotspot_Table == puzzle["hotspot"] && start_button_enabled()
+    } else {
+        return increases(wScreenVisible) && wHotspot_Table == puzzle["hotspot"]
+    }
+}
+
 
 // Either hotspot for a puzzle is activated
 function in_scenes(puzzle) {
@@ -323,6 +335,16 @@ function arbolits_move(puzzle) =>
 // x2, y2: bottomright
 function salafy_location(puzzle) =>
     wActorSalafyX >= puzzle["x"] && wActorSalafyX <= puzzle["x2"] && wActorSalafyY >= puzzle["y"] && wActorSalafyY <= puzzle["y2"]
+
+// Number of times that Salafy uses kicking action
+// kicks: max number of kicks
+Script_HeroKickLeft = 0x60F514
+Script_HeroKickRight = 0x611B14
+Script_HeroKickUp = 0x614114
+Script_HeroKickDown = 0x616714
+script_kicks = [Script_HeroKickLeft, Script_HeroKickRight, Script_HeroKickUp, Script_HeroKickDown]
+function salafy_kicks(puzzle) =>
+    repeated(puzzle["kicks"] + 1, any_of(script_kicks, script => wActorSalafyScriptA == script))
 //////////////////
 // Achievements //
 //////////////////
@@ -390,7 +412,7 @@ add_puzzle("Underneath", 4, {
     "hotspot2": 0,
     "complete": [Script_Underneath_Puzzle4_Complete, Script_Underneath_Puzzle4_SecretComplete],
     "title": "Digging Out",
-    "points": 3,
+    "points": 5,
     "title2": "Exploration",
     "points2": 3,
     "desc2": "Head to the bottom-right corner of the puzzle, then turn around and finish the puzzle in the top-right corner",
@@ -404,7 +426,7 @@ add_puzzle("Underneath", 5, {
     "hotspot2": 0,
     "complete": [Script_Underneath_Puzzle5_Complete],
     "title": "Secret Mission",
-    "points": 3,
+    "points": 5,
     "title2": "Brainiac",
     "points2": 4,
     "parmalags": 11,
@@ -444,11 +466,44 @@ add_puzzle("Cald", 3, {
     "arbolits": 10,
     "arbolits_move": 10
 })
+add_puzzle("Cald", 4, {
+    "hotspot": Hotspot_Cald_Puzzle4,
+    "hotspot2": 0,
+    "complete": [Script_Cald_Puzzle4_Complete],
+    "title": "Out of the Hot Tub",
+    "points": 5,
+    "title2": "Button Avoider",
+    "points2": 3,
+    "arbolits_first": 1,
+    "arbolits": 9,
+    "arbolits_move": 8
+})
+add_puzzle("Cald", 5, {
+    "hotspot": Hotspot_Cald_Puzzle5,
+    "hotspot2": 0,
+    "complete": [Script_Cald_Puzzle5_Complete],
+    "title": "Loop-de-Loop",
+    "points": 5,
+    "title2": "Rollercoaster",
+    "points2": 3,
+    "time": "14.00",
+    "frames": 14*60 - 1
+})
+add_puzzle("Naroom", 1, {
+    "hotspot": Hotspot_Naroom_Puzzle1,
+    "hotspot2": 0,
+    "complete": [Script_Naroom_Puzzle1_Complete],
+    "title": "Home",
+    "points": 3,
+    "title2": "Broken Toe",
+    "points2": 3,
+    "kicks": 57
+})
 
 function puzzle(name) {
     puz = puzzles[name]
     achievement(
-        title = puz["title"],
+        title = cardinal(puz) + puz["title"], // TODO remove cardinal(puz)
         points = puz["points"],
         description = "Complete the " + ordinal(puz),
         trigger = game_loaded() && scene_end(puz) && __ornext(any_of(puz["complete"], script => system(script)))
@@ -502,7 +557,15 @@ function enter_box(name) {
         description = "Challenge: " + puz["desc2"],
         trigger = game_loaded() && in_scenes(puz) && never(scene_unloaded(puz)) && once(salafy_location(puz)) && trigger_when(puzzle_end(puz))
     )
-    
+}
+function kicks(name) {
+    puz = puzzles[name]
+    achievement(
+        title = puz["title2"],
+        points = puz["points2"],
+        description = "Challenge: Complete the " + ordinal(puz) + " whilst kicking no more than " + puz["kicks"] + " times",
+        trigger = game_loaded() && in_scenes(puz) && disable_when(salafy_kicks(puz), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
+    )
 }
 puzzle("Underneath1")
 timeboard("Underneath1")
@@ -519,6 +582,7 @@ enter_box("Underneath4")
 puzzle("Underneath5")
 timeboard("Underneath5")
 parmalag_avoid("Underneath5")
+
 puzzle("Cald1")
 timeboard("Cald1")
 speedrun("Cald1")
@@ -528,3 +592,14 @@ speedrun("Cald2")
 puzzle("Cald3")
 timeboard("Cald3")
 arbolits_avoid("Cald3")
+puzzle("Cald4")
+timeboard("Cald4")
+arbolits_avoid("Cald4")
+puzzle("Cald5")
+timeboard("Cald5")
+speedrun("Cald5")
+
+puzzle("Naroom1")
+timeboard("Naroom1")
+kicks("Naroom1")
+// Naroom 2 = speedrun
