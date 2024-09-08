@@ -165,12 +165,16 @@ Script_Paradwyn_Puzzle3_SecretComplete = bank_address(0x056B7F)
 Script_Core_Puzzle2_SecretComplete = bank_address(0x0589F6)
 Script_Bograth_Puzzle2_SecretComplete = bank_address(0x05E796)
 Script_Cald_Puzzle2_SecretComplete = bank_address(0x063205)
+Script_Orothe_Puzzle1_SecretComplete = bank_address(0x05C404)
 Script_StartRoom_SecretComplete = bank_address(0x061F2A)
 
 // Transition: System can be the first frame of the hotspot
 // Master takes over when SceneNew(), include the value on the first frame that screen is on for safety purposes
 Script_Underneath_Puzzle2_Transition = [bank_address(0x0546D6), bank_address(0x054708)]
 Script_Underneath_Puzzle3_Transition = [bank_address(0x054BDC), bank_address(0x054C0E)]
+Script_Naroom_Puzzle2_Transition = [bank_address(0x03EF64), bank_address(0x03EF8F)]
+Script_Naroom_Puzzle5_Transition = [bank_address(0x03FCFF), bank_address(0x03FD2A)]
+
 //////////
 // WRAM //
 //////////
@@ -227,6 +231,7 @@ wActorSalafyScriptB = tbyte(wActorSalafy + wActor_Offset_ScriptB)
 //////////
 
 xBits_Puzzle_Bits1 = 0xA028
+xPuzzle_Misc_2 = byte(0xA133)
 
 //////////
 // Misc //
@@ -251,7 +256,8 @@ function system(address) =>
 function text(address) =>
     wScript_Text == address
 
-function no_cheat() => wSalafyInvincible == 0
+function no_cheat() =>
+    always_true()//wSalafyInvincible == 0 TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
 
 
 /////////////////////////////
@@ -345,6 +351,10 @@ Script_HeroKickDown = 0x616714
 script_kicks = [Script_HeroKickLeft, Script_HeroKickRight, Script_HeroKickUp, Script_HeroKickDown]
 function salafy_kicks(puzzle) =>
     repeated(puzzle["kicks"] + 1, any_of(script_kicks, script => wActorSalafyScriptA == script))
+
+function min_bubbles(puzzle) =>
+    xPuzzle_Misc_2 >= puzzle["bubbles"]
+
 //////////////////
 // Achievements //
 //////////////////
@@ -380,7 +390,7 @@ add_puzzle("Underneath", 1, {
     "points": 1,
     "title2": "Off to a Great Start",
     "points2": 2,
-    "time": "7.00",
+    "time": "7 seconds",
     "frames": 7*60 - 1
 })
 add_puzzle("Underneath", 2, {
@@ -404,7 +414,7 @@ add_puzzle("Underneath", 3, {
     "points": 1,
     "title2": "Panic Run",
     "points2": 2,
-    "time": "5.00",
+    "time": "5 seconds",
     "frames": 5*60 - 1
 })
 add_puzzle("Underneath", 4, {
@@ -440,7 +450,7 @@ add_puzzle("Cald", 1, {
     "points": 1,
     "title2": "Sweating It Out",
     "points2": 2,
-    "time": "10.00",
+    "time": "10 seconds",
     "frames": 10*60 - 1
 })
 add_puzzle("Cald", 2, {
@@ -451,7 +461,7 @@ add_puzzle("Cald", 2, {
     "points": 1,
     "title2": "Valkan's ArboLit!",
     "points2": 2,
-    "time": "7.00",
+    "time": "7 seconds",
     "frames": 7*60 - 1
 })
 add_puzzle("Cald", 3, {
@@ -486,7 +496,7 @@ add_puzzle("Cald", 5, {
     "points": 5,
     "title2": "Rollercoaster",
     "points2": 3,
-    "time": "14.00",
+    "time": "14 seconds",
     "frames": 14*60 - 1
 })
 add_puzzle("Naroom", 1, {
@@ -499,14 +509,76 @@ add_puzzle("Naroom", 1, {
     "points2": 3,
     "kicks": 57
 })
-
+add_puzzle("Naroom", 2, {
+    "hotspot": Hotspot_Naroom_Puzzle2,
+    "hotspot2": Hotspot_Naroom_Puzzle25_End,
+    "transition": Script_Naroom_Puzzle2_Transition,
+    "complete": [Script_Naroom_Puzzle2_Complete],
+    "title": "Diggy Hole",
+    "points": 3,
+    "title2": "Shovelling Like No Tomorrow",
+    "points2": 3,
+    "time": "1 minute",
+    "frames": 60*60 - 1
+})
+add_puzzle("Naroom", 3, {
+    "hotspot": Hotspot_Naroom_Puzzle3,
+    "hotspot2": 0,
+    "complete": [Script_Naroom_Puzzle3_Complete],
+    "title": "Two Ways",
+    "points": 3,
+    "title2": "Left Way",
+    "points2": 3,
+    "kicks": 44
+})
+add_puzzle("Naroom", 4, {
+    "hotspot": Hotspot_Naroom_Puzzle4,
+    "hotspot2": 0,
+    "complete": [Script_Naroom_Puzzle4_Complete, Script_Naroom_Puzzle4_SecretComplete],
+    "title": "The Great Divide",
+    "points": 5,
+    "title2": "Too Many Blocks",
+    "points2": 3,
+    "desc2": "Complete the fourth Naroom puzzle via the top route"
+})
+add_puzzle("Naroom", 5, {
+    "hotspot": Hotspot_Naroom_Puzzle5,
+    "hotspot2": Hotspot_Naroom_Puzzle25_End,
+    "transition": Script_Naroom_Puzzle5_Transition,
+    "complete": [Script_Naroom_Puzzle5_Complete],
+    "title": "Star Wars",
+    "points": 3,
+    "title2": "Podrace",
+    "points2": 3,
+    "time": "13 seconds",
+    "frames": 13*60 - 1
+})
+add_puzzle("Orothe", 1, {
+    "hotspot": Hotspot_Orothe_Puzzle1,
+    "hotspot2": 0,
+    "complete": [Script_Orothe_Puzzle1_Complete, Script_Orothe_Puzzle1_SecretComplete],
+    "title": "Water Hazard",
+    "points": 3,
+    "title2": "Bubbles!",
+    "points2": 3,
+    "bubbles": 2,
+})
 function puzzle(name) {
     puz = puzzles[name]
     achievement(
         title = cardinal(puz) + puz["title"], // TODO remove cardinal(puz)
         points = puz["points"],
         description = "Complete the " + ordinal(puz),
-        trigger = game_loaded() && scene_end(puz) && __ornext(any_of(puz["complete"], script => system(script)))
+        trigger = game_loaded() && scene_end(puz) && puzzle_end(puz)
+    )
+}
+function normal_only(name) {
+    puz = puzzles[name]
+    achievement(
+        title = puz["title2"],
+        points = puz["points2"],
+        description = "Challenge: " + puz["desc2"],
+        trigger = game_loaded() && scene_end(puz) && system(puz["complete"][0])
     )
 }
 function timeboard(name) {
@@ -527,7 +599,7 @@ function speedrun(name) {
     achievement(
         title = puz["title2"],
         points = puz["points2"],
-        description = "Challenge: Complete the " + ordinal(puz) + " in under " + puz["time"] + " seconds",
+        description = "Challenge: Complete the " + ordinal(puz) + " in under " + puz["time"],
         trigger = game_loaded() && in_scenes(puz) && disable_when(repeated(puz["frames"], always_true()), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
     )
 }
@@ -567,6 +639,15 @@ function kicks(name) {
         trigger = game_loaded() && in_scenes(puz) && disable_when(salafy_kicks(puz), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
     )
 }
+function bubbles(name) {
+    puz = puzzles[name]
+    achievement(
+        title = puz["title2"],
+        points = puz["points2"],
+        description = "Challenge: Complete the " + ordinal(puz) + " with at least " + puz["bubbles"] + " bubbles",
+        trigger = game_loaded() && in_scenes(puz) && min_bubbles(puz) && trigger_when(puzzle_end(puz))
+    )
+}
 puzzle("Underneath1")
 timeboard("Underneath1")
 speedrun("Underneath1")
@@ -602,4 +683,22 @@ speedrun("Cald5")
 puzzle("Naroom1")
 timeboard("Naroom1")
 kicks("Naroom1")
-// Naroom 2 = speedrun
+puzzle("Naroom2")
+timeboard("Naroom2")
+speedrun("Naroom2")
+puzzle("Naroom3")
+timeboard("Naroom3")
+kicks("Naroom3")
+puzzle("Naroom4")
+timeboard("Naroom4")
+normal_only("Naroom4")
+puzzle("Naroom5")
+timeboard("Naroom5")
+speedrun("Naroom5")
+
+puzzle("Orothe1")
+timeboard("Orothe1")
+bubbles("Orothe1")
+
+
+// DONT FORGET TO ADD INVINCIBILITY CHECK
