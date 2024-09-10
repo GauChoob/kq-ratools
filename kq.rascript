@@ -563,6 +563,47 @@ add_puzzle("Orothe", 1, {
     "points2": 3,
     "bubbles": 2,
 })
+add_puzzle("Orothe", 2, {
+    "hotspot": Hotspot_Orothe_Puzzle2,
+    "hotspot2": 0,
+    "complete": [Script_Orothe_Puzzle2_Complete],
+    "title": "Abaquists",
+    "points": 3,
+    "title2": "Watermazing",
+    "points2": 3,
+    "bubbles": 2,
+})
+add_puzzle("Orothe", 3, {
+    "hotspot": Hotspot_Orothe_Puzzle3,
+    "hotspot2": 0,
+    "complete": [Script_Orothe_Puzzle3_Complete],
+    "title": "Switchfusion",
+    "points": 3,
+    "title2": "Untouchable",
+    "points2": 3,
+    "bubbles": 3,
+})
+add_puzzle("Orothe", 4, {
+    "hotspot": Hotspot_Orothe_Puzzle4,
+    "hotspot2": 0,
+    "complete": [Script_Orothe_Puzzle4_Complete],
+    "title": "Tic Tac Toe",
+    "points": 3,
+    "title2": "TicTacToe!",
+    "points2": 3,
+    "time": "70 seconds",
+    "frames": 70*60 - 1
+})
+add_puzzle("Orothe", 5, {
+    "hotspot": Hotspot_Orothe_Puzzle5,
+    "hotspot2": 0,
+    "complete": [Script_Orothe_Puzzle5_Complete],
+    "title": "Back to Square One",
+    "points": 3,
+    "title2": "Blocktastic",
+    "points2": 3,
+    "bubbles": 3,
+})
 function puzzle(name) {
     puz = puzzles[name]
     achievement(
@@ -699,6 +740,15 @@ speedrun("Naroom5")
 puzzle("Orothe1")
 timeboard("Orothe1")
 bubbles("Orothe1")
+puzzle("Orothe2")
+timeboard("Orothe2")
+bubbles("Orothe2")
+puzzle("Orothe3")
+timeboard("Orothe3")
+bubbles("Orothe3")
+puzzle("Orothe4")
+timeboard("Orothe4")
+speedrun("Orothe4")
 
 
 // DONT FORGET TO ADD INVINCIBILITY CHECK
