@@ -198,6 +198,10 @@ wScript_StartButtonDisabled = byte(0xC731)
 function start_button_enabled() =>
     wScript_StartButtonDisabled == 0
 
+wActorSave_Flags = byte(0xC188)
+function flarp_kicked() =>
+    wActorSave_Flags == 1 && prev(wActorSave_Flags) == 0
+
 // Build the wActor array
 wActorState = []
 wActorX = []
@@ -349,18 +353,24 @@ Script_HeroKickRight = 0x611B14
 Script_HeroKickUp = 0x614114
 Script_HeroKickDown = 0x616714
 script_kicks = [Script_HeroKickLeft, Script_HeroKickRight, Script_HeroKickUp, Script_HeroKickDown]
-function salafy_kicks(puzzle) =>
+function salafy_kicks_block(puzzle) =>
     repeated(puzzle["kicks"] + 1, any_of(script_kicks, script => wActorSalafyScriptA == script))
+
+function salafy_kicks_flarp(puzzle) =>
+    repeated(puzzle["kicks"] + 1, flarp_kicked())
+
 
 function min_bubbles(puzzle) =>
     xPuzzle_Misc_2 >= puzzle["bubbles"]
 
+
+function actor_moved(puzzle) =>
+    wActorX[puzzle["actor"]] != puzzle["x"] || wActorY[puzzle["actor"]] != puzzle["y"]
 //////////////////
 // Achievements //
 //////////////////
 
 
-puzzles = {}
 
 // hotspot: Scene load hotspot
 // hotspot2: 0, or else hotspot for the second part of the puzzle
@@ -373,14 +383,113 @@ puzzles = {}
 //
 
 
-function add_puzzle(zone, level, object) {
+function puzzle(puz) {
+    achievement(
+        title = cardinal(puz) + puz["title"], // TODO remove cardinal(puz)
+        points = puz["points"],
+        description = "Complete the " + ordinal(puz),
+        trigger = game_loaded() && scene_end(puz) && puzzle_end(puz)
+    )
+}
+function normal_only(puz) {
+    achievement(
+        title = puz["title2"],
+        points = puz["points2"],
+        description = "Challenge: " + puz["desc2"],
+        trigger = game_loaded() && scene_end(puz) && system(puz["complete"][0])
+    )
+}
+function timeboard(puz) {
+    leaderboard(
+        title = cardinal(puz),
+        description = "Fastest time in the " + ordinal(puz),
+        start = game_loaded() && scene_loads(puz),
+        cancel = scene_unloaded(puz),
+        submit = puzzle_end(puz),
+        value = always_true(),
+        format = "FRAMES",
+        lower_is_better = true
+    )
+}
+function speedrun(puz) {
+    achievement(
+        title = puz["title2"],
+        points = puz["points2"],
+        description = "Challenge: Complete the " + ordinal(puz) + " in under " + puz["time"],
+        trigger = game_loaded() && in_scenes(puz) && disable_when(repeated(puz["frames"], always_true()), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
+    )
+}
+function parmalag_avoid(puz) {
+    achievement(
+        title = puz["title2"],
+        points = puz["points2"],
+        description = "Challenge: Complete the " + ordinal(puz) + " without triggering Parmalags more than " + puz["parmalags_move"] + " times",
+        trigger = game_loaded() && in_scenes(puz) && disable_when(parmalags_move(puz), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
+    )
+}
+function arbolits_avoid(puz) {
+    achievement(
+        title = puz["title2"],
+        points = puz["points2"],
+        description = "Challenge: Complete the " + ordinal(puz) + " without triggering Arbolits more than " + puz["arbolits_move"] + " times",
+        trigger = game_loaded() && in_scenes(puz) && disable_when(arbolits_move(puz), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
+    )
+}
+function enter_box(puz) {
+    achievement(
+        title = puz["title2"],
+        points = puz["points2"],
+        description = "Challenge: " + puz["desc2"],
+        trigger = game_loaded() && in_scenes(puz) && never(scene_unloaded(puz)) && once(salafy_location(puz)) && trigger_when(puzzle_end(puz))
+    )
+}
+function kicks(puz) {
+    achievement(
+        title = puz["title2"],
+        points = puz["points2"],
+        description = "Challenge: Complete the " + ordinal(puz) + " whilst kicking no more than " + puz["kicks"] + " times",
+        trigger = game_loaded() && in_scenes(puz) && disable_when(salafy_kicks_block(puz), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
+    )
+}
+function bubbles(puz) {
+    achievement(
+        title = puz["title2"],
+        points = puz["points2"],
+        description = "Challenge: Complete the " + ordinal(puz) + " with at least " + puz["bubbles"] + " bubbles",
+        trigger = game_loaded() && in_scenes(puz) && min_bubbles(puz) && trigger_when(puzzle_end(puz))
+    )
+}
+function flarps(puz) {
+    achievement(
+        title = puz["title2"],
+        points = puz["points2"],
+        description = "Challenge: Complete the " + ordinal(puz) + " whilst kicking Flarps no more than " + puz["kicks"] + " times",
+        trigger = game_loaded() && in_scenes(puz) && disable_when(salafy_kicks_flarp(puz), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
+    )
+}
+function actor_still(puz) {
+    achievement(
+        title = puz["title2"],
+        points = puz["points2"],
+        description = "Challenge: " + puz["desc2"],
+        trigger = game_loaded() && in_scenes(puz) && disable_when(actor_moved(puz), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
+    )
+}
+
+
+function add_puzzle(zone, level, puz) {
     key = zone + level
-    puzzles[key] = object
-    puzzles[key]["zone"] = zone
-    puzzles[key]["level"] = level
-    if(puzzles[key]["hotspot2"] == 0) {
-        puzzles[key]["hotspot2"] = puzzles[key]["hotspot"]
+    puz["zone"] = zone
+    puz["level"] = level
+    if(puz["hotspot2"] == 0) {
+        puz["hotspot2"] = puz["hotspot"]
     }
+    puzzle(puz)
+    timeboard(puz)
+
+    //puz["challenge"](puz) // crashes in 1.14.1 so
+    challenge = puz["challenge"]
+    challenge(puz)
 }
 add_puzzle("Underneath", 1, {
     "hotspot": Hotspot_Underneath_Puzzle1,
@@ -388,6 +497,7 @@ add_puzzle("Underneath", 1, {
     "complete": [Script_Underneath_Puzzle1_Complete],
     "title": "World 1-1",
     "points": 1,
+    "challenge": speedrun,
     "title2": "Off to a Great Start",
     "points2": 2,
     "time": "7 seconds",
@@ -400,6 +510,7 @@ add_puzzle("Underneath", 2, {
     "complete": [Script_Underneath_Puzzle2_Complete],
     "title": "Parmalag Ball",
     "points": 1,
+    "challenge": parmalag_avoid,
     "title2": "Efficient Steps",
     "points2": 3,
     "parmalags": 5,
@@ -412,6 +523,7 @@ add_puzzle("Underneath", 3, {
     "complete": [Script_Underneath_Puzzle3_Complete],
     "title": "Parmalag Implosion",
     "points": 1,
+    "challenge": speedrun,
     "title2": "Panic Run",
     "points2": 2,
     "time": "5 seconds",
@@ -423,6 +535,7 @@ add_puzzle("Underneath", 4, {
     "complete": [Script_Underneath_Puzzle4_Complete, Script_Underneath_Puzzle4_SecretComplete],
     "title": "Digging Out",
     "points": 5,
+    "challenge": enter_box,
     "title2": "Exploration",
     "points2": 3,
     "desc2": "Head to the bottom-right corner of the puzzle, then turn around and finish the puzzle in the top-right corner",
@@ -437,6 +550,7 @@ add_puzzle("Underneath", 5, {
     "complete": [Script_Underneath_Puzzle5_Complete],
     "title": "Secret Mission",
     "points": 5,
+    "challenge": parmalag_avoid,
     "title2": "Brainiac",
     "points2": 4,
     "parmalags": 11,
@@ -448,6 +562,7 @@ add_puzzle("Cald", 1, {
     "complete": [Script_Cald_Puzzle1_Complete],
     "title": "Getting Hot",
     "points": 1,
+    "challenge": speedrun,
     "title2": "Sweating It Out",
     "points2": 2,
     "time": "10 seconds",
@@ -459,6 +574,7 @@ add_puzzle("Cald", 2, {
     "complete": [Script_Cald_Puzzle2_Complete, Script_Cald_Puzzle2_SecretComplete],
     "title": "Valkan's Arbolits",
     "points": 1,
+    "challenge": speedrun,
     "title2": "Valkan's ArboLit!",
     "points2": 2,
     "time": "7 seconds",
@@ -470,6 +586,7 @@ add_puzzle("Cald", 3, {
     "complete": [Script_Cald_Puzzle3_Complete],
     "title": "Button Masher",
     "points": 1,
+    "challenge": arbolits_avoid,
     "title2": "Button Clicker",
     "points2": 2,
     "arbolits_first": 1,
@@ -482,6 +599,7 @@ add_puzzle("Cald", 4, {
     "complete": [Script_Cald_Puzzle4_Complete],
     "title": "Out of the Hot Tub",
     "points": 5,
+    "challenge": arbolits_avoid,
     "title2": "Button Avoider",
     "points2": 3,
     "arbolits_first": 1,
@@ -494,6 +612,7 @@ add_puzzle("Cald", 5, {
     "complete": [Script_Cald_Puzzle5_Complete],
     "title": "Loop-de-Loop",
     "points": 5,
+    "challenge": speedrun,
     "title2": "Rollercoaster",
     "points2": 3,
     "time": "14 seconds",
@@ -505,6 +624,7 @@ add_puzzle("Naroom", 1, {
     "complete": [Script_Naroom_Puzzle1_Complete],
     "title": "Home",
     "points": 3,
+    "challenge": kicks,
     "title2": "Broken Toe",
     "points2": 3,
     "kicks": 57
@@ -516,6 +636,7 @@ add_puzzle("Naroom", 2, {
     "complete": [Script_Naroom_Puzzle2_Complete],
     "title": "Diggy Hole",
     "points": 3,
+    "challenge": speedrun,
     "title2": "Shovelling Like No Tomorrow",
     "points2": 3,
     "time": "1 minute",
@@ -527,6 +648,7 @@ add_puzzle("Naroom", 3, {
     "complete": [Script_Naroom_Puzzle3_Complete],
     "title": "Two Ways",
     "points": 3,
+    "challenge": kicks,
     "title2": "Left Way",
     "points2": 3,
     "kicks": 44
@@ -537,6 +659,7 @@ add_puzzle("Naroom", 4, {
     "complete": [Script_Naroom_Puzzle4_Complete, Script_Naroom_Puzzle4_SecretComplete],
     "title": "The Great Divide",
     "points": 5,
+    "challenge": normal_only,
     "title2": "Too Many Blocks",
     "points2": 3,
     "desc2": "Complete the fourth Naroom puzzle via the top route"
@@ -548,6 +671,7 @@ add_puzzle("Naroom", 5, {
     "complete": [Script_Naroom_Puzzle5_Complete],
     "title": "Star Wars",
     "points": 3,
+    "challenge": speedrun,
     "title2": "Podrace",
     "points2": 3,
     "time": "13 seconds",
@@ -559,6 +683,7 @@ add_puzzle("Orothe", 1, {
     "complete": [Script_Orothe_Puzzle1_Complete, Script_Orothe_Puzzle1_SecretComplete],
     "title": "Water Hazard",
     "points": 3,
+    "challenge": bubbles,
     "title2": "Bubbles!",
     "points2": 3,
     "bubbles": 2,
@@ -569,6 +694,7 @@ add_puzzle("Orothe", 2, {
     "complete": [Script_Orothe_Puzzle2_Complete],
     "title": "Abaquists",
     "points": 3,
+    "challenge": bubbles,
     "title2": "Watermazing",
     "points2": 3,
     "bubbles": 2,
@@ -579,6 +705,7 @@ add_puzzle("Orothe", 3, {
     "complete": [Script_Orothe_Puzzle3_Complete],
     "title": "Switchfusion",
     "points": 3,
+    "challenge": bubbles,
     "title2": "Untouchable",
     "points2": 3,
     "bubbles": 3,
@@ -589,6 +716,7 @@ add_puzzle("Orothe", 4, {
     "complete": [Script_Orothe_Puzzle4_Complete],
     "title": "Tic Tac Toe",
     "points": 3,
+    "challenge": speedrun,
     "title2": "TicTacToe!",
     "points2": 3,
     "time": "70 seconds",
@@ -600,155 +728,70 @@ add_puzzle("Orothe", 5, {
     "complete": [Script_Orothe_Puzzle5_Complete],
     "title": "Back to Square One",
     "points": 3,
+    "challenge": bubbles,
     "title2": "Blocktastic",
     "points2": 3,
     "bubbles": 3,
 })
-function puzzle(name) {
-    puz = puzzles[name]
-    achievement(
-        title = cardinal(puz) + puz["title"], // TODO remove cardinal(puz)
-        points = puz["points"],
-        description = "Complete the " + ordinal(puz),
-        trigger = game_loaded() && scene_end(puz) && puzzle_end(puz)
-    )
-}
-function normal_only(name) {
-    puz = puzzles[name]
-    achievement(
-        title = puz["title2"],
-        points = puz["points2"],
-        description = "Challenge: " + puz["desc2"],
-        trigger = game_loaded() && scene_end(puz) && system(puz["complete"][0])
-    )
-}
-function timeboard(name) {
-    puz = puzzles[name]
-    leaderboard(
-        title = cardinal(puz),
-        description = "Fastest time in the " + ordinal(puz),
-        start = game_loaded() && scene_loads(puz),
-        cancel = scene_unloaded(puz),
-        submit = puzzle_end(puz),
-        value = always_true(),
-        format = "FRAMES",
-        lower_is_better = true
-    )
-}
-function speedrun(name) {
-    puz = puzzles[name]
-    achievement(
-        title = puz["title2"],
-        points = puz["points2"],
-        description = "Challenge: Complete the " + ordinal(puz) + " in under " + puz["time"],
-        trigger = game_loaded() && in_scenes(puz) && disable_when(repeated(puz["frames"], always_true()), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
-    )
-}
-function parmalag_avoid(name) {
-    puz = puzzles[name]
-    achievement(
-        title = puz["title2"],
-        points = puz["points2"],
-        description = "Challenge: Complete the " + ordinal(puz) + " without triggering Parmalags more than " + puz["parmalags_move"] + " times",
-        trigger = game_loaded() && in_scenes(puz) && disable_when(parmalags_move(puz), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
-    )
-}
-function arbolits_avoid(name) {
-    puz = puzzles[name]
-    achievement(
-        title = puz["title2"],
-        points = puz["points2"],
-        description = "Challenge: Complete the " + ordinal(puz) + " without triggering Arbolits more than " + puz["arbolits_move"] + " times",
-        trigger = game_loaded() && in_scenes(puz) && disable_when(arbolits_move(puz), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
-    )
-}
-function enter_box(name) {
-    puz = puzzles[name]
-    achievement(
-        title = puz["title2"],
-        points = puz["points2"],
-        description = "Challenge: " + puz["desc2"],
-        trigger = game_loaded() && in_scenes(puz) && never(scene_unloaded(puz)) && once(salafy_location(puz)) && trigger_when(puzzle_end(puz))
-    )
-}
-function kicks(name) {
-    puz = puzzles[name]
-    achievement(
-        title = puz["title2"],
-        points = puz["points2"],
-        description = "Challenge: Complete the " + ordinal(puz) + " whilst kicking no more than " + puz["kicks"] + " times",
-        trigger = game_loaded() && in_scenes(puz) && disable_when(salafy_kicks(puz), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
-    )
-}
-function bubbles(name) {
-    puz = puzzles[name]
-    achievement(
-        title = puz["title2"],
-        points = puz["points2"],
-        description = "Challenge: Complete the " + ordinal(puz) + " with at least " + puz["bubbles"] + " bubbles",
-        trigger = game_loaded() && in_scenes(puz) && min_bubbles(puz) && trigger_when(puzzle_end(puz))
-    )
-}
-puzzle("Underneath1")
-timeboard("Underneath1")
-speedrun("Underneath1")
-puzzle("Underneath2")
-timeboard("Underneath2")
-parmalag_avoid("Underneath2")
-puzzle("Underneath3")
-timeboard("Underneath3")
-speedrun("Underneath3")
-puzzle("Underneath4")
-timeboard("Underneath4")
-enter_box("Underneath4")
-puzzle("Underneath5")
-timeboard("Underneath5")
-parmalag_avoid("Underneath5")
-
-puzzle("Cald1")
-timeboard("Cald1")
-speedrun("Cald1")
-puzzle("Cald2")
-timeboard("Cald2")
-speedrun("Cald2")
-puzzle("Cald3")
-timeboard("Cald3")
-arbolits_avoid("Cald3")
-puzzle("Cald4")
-timeboard("Cald4")
-arbolits_avoid("Cald4")
-puzzle("Cald5")
-timeboard("Cald5")
-speedrun("Cald5")
-
-puzzle("Naroom1")
-timeboard("Naroom1")
-kicks("Naroom1")
-puzzle("Naroom2")
-timeboard("Naroom2")
-speedrun("Naroom2")
-puzzle("Naroom3")
-timeboard("Naroom3")
-kicks("Naroom3")
-puzzle("Naroom4")
-timeboard("Naroom4")
-normal_only("Naroom4")
-puzzle("Naroom5")
-timeboard("Naroom5")
-speedrun("Naroom5")
-
-puzzle("Orothe1")
-timeboard("Orothe1")
-bubbles("Orothe1")
-puzzle("Orothe2")
-timeboard("Orothe2")
-bubbles("Orothe2")
-puzzle("Orothe3")
-timeboard("Orothe3")
-bubbles("Orothe3")
-puzzle("Orothe4")
-timeboard("Orothe4")
-speedrun("Orothe4")
-
-
+add_puzzle("Arderial", 1, {
+    "hotspot": Hotspot_Arderial_Puzzle1,
+    "hotspot2": 0,
+    "complete": [Script_Arderial_Puzzle1_Complete],
+    "title": "Islands in the Sky",
+    "points": 3,
+    "challenge": flarps,
+    "title2": "Flarping Around",
+    "points2": 3,
+    "kicks": 19
+})
+add_puzzle("Arderial", 2, {
+    "hotspot": Hotspot_Arderial_Puzzle2,
+    "hotspot2": 0,
+    "complete": [Script_Arderial_Puzzle2_Complete],
+    "title": "Stacks of Flarps",
+    "points": 3,
+    "challenge": speedrun,
+    "title2": "Flarp Juggling",
+    "points2": 3,
+    "time": "75 seconds",
+    "frames": 75*60 - 1
+})
+add_puzzle("Arderial", 3, {
+    "hotspot": Hotspot_Arderial_Puzzle3,
+    "hotspot2": 0,
+    "complete": [Script_Arderial_Puzzle3_Complete, Script_Arderial_Puzzle3_SecretComplete],
+    "title": "Flarp Wall",
+    "points": 3,
+    "challenge": actor_still,
+    "title2": "Flarp Hop",
+    "points2": 3,
+    "desc2": "Complete the third Arderial puzzle without moving the topleft Flarp",
+    "actor": 14 - 2,
+    "x": 0x0C,
+    "y": 0x03
+})
+add_puzzle("Arderial", 4, {
+    "hotspot": Hotspot_Arderial_Puzzle4,
+    "hotspot2": 0,
+    "complete": [Script_Arderial_Puzzle4_Complete],
+    "title": "Quartered",
+    "points": 5,
+    "challenge": speedrun,
+    "title2": "Piece of Pie",
+    "points2": 3,
+    "time": "40 seconds",
+    "frames": 40*60 - 1
+})
+add_puzzle("Arderial", 5, {
+    "hotspot": Hotspot_Arderial_Puzzle5,
+    "hotspot2": 0,
+    "complete": [Script_Arderial_Puzzle5_Complete],
+    "title": "Pepe Silvia",
+    "points": 3,
+    "challenge": flarps,
+    "title2": "Detective",
+    "points2": 3,
+    "kicks": 15
+})
 // DONT FORGET TO ADD INVINCIBILITY CHECK
+
