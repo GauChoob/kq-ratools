@@ -343,8 +343,11 @@ function arbolits_move(puzzle) =>
 // If Salafy is within the bounds of rectangle
 // x, y: topleft
 // x2, y2: bottomright
-function salafy_location(puzzle) =>
+function salafy_rectangle(puzzle) =>
     wActorSalafyX >= puzzle["x"] && wActorSalafyX <= puzzle["x2"] && wActorSalafyY >= puzzle["y"] && wActorSalafyY <= puzzle["y2"]
+
+function salafy_locations(puzzle) =>
+    tally_of(puzzle["locations"], length(puzzle["locations"]), location => once(wActorSalafyX == location[0] && wActorSalafyY == location[1]))
 
 // Number of times that Salafy uses kicking action
 // kicks: max number of kicks
@@ -366,6 +369,15 @@ function min_bubbles(puzzle) =>
 
 function actor_moved(puzzle) =>
     wActorX[puzzle["actor"]] != puzzle["x"] || wActorY[puzzle["actor"]] != puzzle["y"]
+
+
+function thirst_count(puzzle) =>
+    repeated(puzzle["drinks"] + 1, puzzle["thirst_byte"] == 14 && prev(puzzle["thirst_byte"] < 14))
+
+
+function dresh5_chunks(puzzle) =>
+    tally_of(range(1, 20), 20, chunk_id => once(xPuzzle_Misc_2 == chunk_id && prev(xPuzzle_Misc_2) != xPuzzle_Misc_2)) // We check the delta as on puzzle init we would otherwise hit a random chunk
+
 //////////////////
 // Achievements //
 //////////////////
@@ -440,7 +452,15 @@ function enter_box(puz) {
         title = puz["title2"],
         points = puz["points2"],
         description = "Challenge: " + puz["desc2"],
-        trigger = game_loaded() && in_scenes(puz) && never(scene_unloaded(puz)) && once(salafy_location(puz)) && trigger_when(puzzle_end(puz))
+        trigger = game_loaded() && in_scenes(puz) && never(scene_unloaded(puz)) && once(salafy_rectangle(puz)) && trigger_when(puzzle_end(puz))
+    )
+}
+function enter_locations(puz) {
+    achievement(
+        title = puz["title2"],
+        points = puz["points2"],
+        description = "Challenge: " + puz["desc2"],
+        trigger = game_loaded() && in_scenes(puz) && never(scene_unloaded(puz)) && once(salafy_locations(puz)) && trigger_when(puzzle_end(puz))
     )
 }
 function kicks(puz) {
@@ -473,6 +493,30 @@ function actor_still(puz) {
         points = puz["points2"],
         description = "Challenge: " + puz["desc2"],
         trigger = game_loaded() && in_scenes(puz) && disable_when(actor_moved(puz), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
+    )
+}
+function thirst(puz) {
+    achievement(
+        title = puz["title2"],
+        points = puz["points2"],
+        description = "Challenge: Complete the " + ordinal(puz) + " whilst drinking no more than " + puz["drinks"] + " times",
+        trigger = game_loaded() && in_scenes(puz) && disable_when(thirst_count(puz), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
+    )
+}
+function dresh5(puz) {
+    achievement(
+        title = puz["title2"],
+        points = puz["points2"],
+        description = "Challenge: Complete the " + ordinal(puz) + " after exploring the entire map",
+        trigger = game_loaded() && never(scene_unloaded(puz)) && measured(dresh5_chunks(puz), when=in_scenes(puz)) && puzzle_end(puz)
+    )
+}
+function enter_locations(puz) {
+    achievement(
+        title = puz["title2"],
+        points = puz["points2"],
+        description = "Challenge: " + puz["desc2"],
+        trigger = game_loaded() && never(scene_unloaded(puz)) && measured(salafy_locations(puz), when=in_scenes(puz)) && puzzle_end(puz)
     )
 }
 
@@ -850,6 +894,125 @@ add_puzzle("Weave", 5, {
     "time": "14 seconds",
     "frames": 14*60 - 1
 })
+add_puzzle("d'Resh", 1, {
+    "hotspot": Hotspot_dResh_Puzzle1,
+    "hotspot2": 0,
+    "complete": [Script_dResh_Puzzle1_Complete],
+    "title": "Grand Canyon",
+    "points": 3,
+    "challenge": speedrun,
+    "title2": "Daredevil",
+    "points2": 3,
+    "time": "90 seconds",
+    "frames": 90*60 - 1
+})
+add_puzzle("d'Resh", 2, {
+    "hotspot": Hotspot_dResh_Puzzle2,
+    "hotspot2": 0,
+    "complete": [Script_dResh_Puzzle2_Complete, Script_dResh_Puzzle2_SecretComplete],
+    "title": "Dehydration",
+    "points": 3,
+    "challenge": thirst,
+    "title2": "Hydro Homie",
+    "points2": 3,
+    "thirst_byte": xPuzzle_Misc_2,
+    "drinks": 2
+})
+add_puzzle("d'Resh", 3, {
+    "hotspot": Hotspot_dResh_Puzzle3,
+    "hotspot2": 0,
+    "complete": [Script_dResh_Puzzle3_Complete],
+    "title": "Merry-Go-Round",
+    "points": 3,
+    "challenge": flarps,
+    "title2": "Precision Operator",
+    "points2": 3,
+    "kicks": 21
+})
+add_puzzle("d'Resh", 4, {
+    "hotspot": Hotspot_dResh_Puzzle4,
+    "hotspot2": 0,
+    "complete": [Script_dResh_Puzzle4_Complete],
+    "title": "Laser Watch",
+    "points": 3,
+    "challenge": speedrun,
+    "title2": "Cyclops",
+    "points2": 3,
+    "time": "40 seconds",
+    "frames": 40*60 - 1
+})
+add_puzzle("d'Resh", 5, {
+    "hotspot": Hotspot_dResh_Puzzle5,
+    "hotspot2": 0,
+    "complete": [Script_dResh_Puzzle5_Complete],
+    "title": "Searching for the Oacis",
+    "points": 3,
+    "challenge": dresh5,
+    "title2": "Cartographer",
+    "points2": 3,
+})
+add_puzzle("Kybar's Teeth", 1, {
+    "hotspot": Hotspot_KybarsTeeth_Puzzle1,
+    "hotspot2": 0,
+    "complete": [Script_KybarsTeeth_Puzzle1_Complete],
+    "title": "Cacophony",
+    "points": 3,
+    "challenge": speedrun,
+    "title2": "Pure Chaos",
+    "points2": 3,
+    "time": "2 seconds",
+    "frames": 2*60 - 1
+})
+add_puzzle("Kybar's Teeth", 2, {
+    "hotspot": Hotspot_KybarsTeeth_Puzzle2,
+    "hotspot2": 0,
+    "complete": [Script_KybarsTeeth_Puzzle2_Complete, Script_KybarsTeeth_Puzzle2_SecretComplete],
+    "title": "Cave In",
+    "points": 3,
+    "challenge": enter_locations,
+    "title2": "Spelunker",
+    "points2": 3,
+    "desc2": "Complete the second Kybar's Teeth puzzle after stepping on all 3 grey moons in the middle of the first room",
+    "locations": [[15, 52], [12, 58], [18, 56]]
+})
+add_puzzle("Kybar's Teeth", 3, {
+    "hotspot": Hotspot_KybarsTeeth_Puzzle3,
+    "hotspot2": 0,
+    "complete": [Script_KybarsTeeth_Puzzle3_Complete],
+    "title": "More Parmlagas",
+    "points": 3,
+    "challenge": parmalag_avoid,
+    "title2": "No Time for Chit-Chat",
+    "points2": 4,
+    "parmalags": 8,
+    "parmalags_move": 8,
+})
+add_puzzle("Kybar's Teeth", 4, {
+    "hotspot": Hotspot_KybarsTeeth_Puzzle4,
+    "hotspot2": 0,
+    "complete": [Script_KybarsTeeth_Puzzle4_Complete],
+    "title": "Stop With the Parmalagas",
+    "points": 3,
+    "challenge": speedrun,
+    "title2": "Dancing with the Parmalags",
+    "points2": 3,
+    "time": "11 seconds",
+    "frames": 11*60 - 1
+})
+add_puzzle("Kybar's Teeth", 5, {
+    "hotspot": Hotspot_KybarsTeeth_Puzzle5,
+    "hotspot2": 0,
+    "complete": [Script_KybarsTeeth_Puzzle5_Complete],
+    "title": "Moga Stampede",
+    "points": 3,
+    "challenge": speedrun,
+    "title2": "Moga Pup, Moba What?",
+    "points2": 3,
+    "time": "3 seconds",
+    "frames": 3*60 - 1
+    
+})
+
 
 Script_WeaveStatue1 = bank_address(0x027D74)
 Script_WeaveStatue2 = bank_address(0x027DDA)
