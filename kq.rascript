@@ -338,6 +338,9 @@ function scene_unloaded(puzzle) {
 // The Congrats textbox opens at the end of a puzzle
 function puzzle_end(puzzle) =>
     __ornext(any_of(puzzle["complete"], script => system(script)))
+// Only the secret
+function puzzle_end_secret(puzzle) =>
+    system(puzzle["complete"][1])
 
 // Count the number of times that the parmalags are triggered
 // parmalags: total number of parmalag actors
@@ -446,6 +449,14 @@ function speedrun(puz) {
         points = puz["points2"],
         description = "Challenge: Complete the " + ordinal(puz) + " in under " + puz["time"],
         trigger = game_loaded() && in_scenes(puz) && disable_when(repeated(puz["frames"], always_true()), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
+    )
+}
+function speedrun_secret(puz) {
+    achievement(
+        title = puz["title2"],
+        points = puz["points2"],
+        description = "Challenge: " + puz["desc2"],
+        trigger = game_loaded() && in_scenes(puz) && disable_when(repeated(puz["frames"], always_true()), until=scene_loads(puz)) && trigger_when(puzzle_end_secret(puz))
     )
 }
 function parmalag_avoid(puz) {
@@ -1114,8 +1125,54 @@ add_puzzle("Paradwyn", 1, {
     "time": "30 seconds",
     "frames": 30*60 - 1
 })
-
-
+add_puzzle("Paradwyn", 2, {
+    "hotspot": Hotspot_Paradwyn_Puzzle2,
+    "hotspot2": 0,
+    "complete": [Script_Paradwyn_Puzzle2_Complete],
+    "title": "Headache",
+    "points": 3,
+    "challenge": speedrun,
+    "title2": "Memorized",
+    "points2": 3,
+    "time": "50 seconds",
+    "frames": 50*60 - 1
+})
+add_puzzle("Paradwyn", 3, {
+    "hotspot": Hotspot_Paradwyn_Puzzle3,
+    "hotspot2": 0,
+    "complete": [Script_Paradwyn_Puzzle3_Complete, Script_Paradwyn_Puzzle3_SecretComplete],
+    "title": "Tropical Fun",
+    "points": 3,
+    "challenge": speedrun_secret,
+    "title2": "Marathon Swimmer",
+    "points2": 3,
+    "desc2": "Complete the third Paradwyn puzzle after hitting all 4 switches in under 40 seconds",
+    "time": "40 seconds",
+    "frames": 40*60 - 1
+})
+add_puzzle("Paradwyn", 4, {
+    "hotspot": Hotspot_Paradwyn_Puzzle4,
+    "hotspot2": 0,
+    "complete": [Script_Paradwyn_Puzzle4_Complete],
+    "title": "Ancient Guardian",
+    "points": 3,
+    "challenge": kicks,
+    "title2": "Nimble Link",
+    "points2": 3,
+    "kicks": 25
+})
+add_puzzle("Paradwyn", 5, {
+    "hotspot": Hotspot_Paradwyn_Puzzle5,
+    "hotspot2": 0,
+    "complete": [Script_Paradwyn_Puzzle5_Complete],
+    "title": "A Whirl of Fun",
+    "points": 3,
+    "challenge": speedrun,
+    "title2": "Vortex Man",
+    "points2": 3,
+    "time": "1 minute",
+    "frames": 60*60 - 1
+})
 Script_WeaveStatue1 = bank_address(0x027D74)
 Script_WeaveStatue2 = bank_address(0x027DDA)
 achievement(
