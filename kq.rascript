@@ -793,5 +793,71 @@ add_puzzle("Arderial", 5, {
     "points2": 3,
     "kicks": 15
 })
+add_puzzle("Weave", 1, {
+    "hotspot": Hotspot_Weave_Puzzle1,
+    "hotspot2": 0,
+    "complete": [Script_Weave_Puzzle1_Complete],
+    "title": "Blocky Jungle",
+    "points": 3,
+    "challenge": speedrun,
+    "title2": "Kick Kick",
+    "points2": 3,
+    "time": "70 seconds",
+    "frames": 70*60 - 1
+})
+add_puzzle("Weave", 2, {
+    "hotspot": Hotspot_Weave_Puzzle2,
+    "hotspot2": 0,
+    "complete": [Script_Weave_Puzzle2_Complete, Script_Weave_Puzzle2_SecretComplete],
+    "title": "Flarps and Blocks",
+    "points": 3,
+    "challenge": normal_only,
+    "title2": "Blocks and Flarps",
+    "points2": 3,
+    "desc2": "Complete the second Weave puzzle via the middle top route"
+})
+add_puzzle("Weave", 3, {
+    "hotspot": Hotspot_Weave_Puzzle3,
+    "hotspot2": 0,
+    "complete": [Script_Weave_Puzzle3_Complete],
+    "title": "Flarp Conveyer",
+    "points": 3,
+    "challenge": flarps,
+    "title2": "Flarp Chain",
+    "points2": 3,
+    "kicks": 45 // I see a solution for 42, but let's be a bit generous
+})
+add_puzzle("Weave", 4, {
+    "hotspot": Hotspot_Weave_Puzzle4,
+    "hotspot2": 0,
+    "complete": [Script_Weave_Puzzle4_Complete],
+    "title": "Flarp Highway",
+    "points": 3,
+    "challenge": flarps,
+    "title2": "Getting the Hang of This",
+    "points2": 3,
+    "kicks": 35 // I see a solution for 29, but let's be a bit generous
+})
+add_puzzle("Weave", 5, {
+    "hotspot": Hotspot_Weave_Puzzle5,
+    "hotspot2": 0,
+    "complete": [Script_Weave_Puzzle5_Complete],
+    "title": "Shooty Tooty",
+    "points": 3,
+    "challenge": speedrun,
+    "title2": "Dodgey Modgey",
+    "points2": 3,
+    "time": "14 seconds",
+    "frames": 14*60 - 1
+})
+
+Script_WeaveStatue1 = bank_address(0x027D74)
+Script_WeaveStatue2 = bank_address(0x027DDA)
+achievement(
+    title = "Yaki's Secret",
+    points = 1,
+    description = "Learn how to open the Training Room closet by finding the instructions on two of the Weave statues",
+    trigger = game_loaded() && measured(tally_of([Script_WeaveStatue1, Script_WeaveStatue2], 2, script => once(system(script))))
+)
 // DONT FORGET TO ADD INVINCIBILITY CHECK
 
