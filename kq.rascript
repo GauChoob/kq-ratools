@@ -235,7 +235,12 @@ wActorSalafyScriptB = tbyte(wActorSalafy + wActor_Offset_ScriptB)
 //////////
 
 xBits_Puzzle_Bits1 = 0xA028
+xBits_Puzzle_Bits2 = 0xA029
+xBits_Puzzle_Bits3 = 0xA02A
 xPuzzle_Misc_2 = byte(0xA133)
+xPuzzle_Misc_3_B = byte(0xA13D)
+
+is_Bograth4 = bit2(xBits_Puzzle_Bits3)
 
 //////////
 // Misc //
@@ -295,6 +300,13 @@ function scene_end(puzzle) =>
 
 // The hotspot for the start of the puzzle is activated and the screen turns on
 function scene_loads(puzzle) {
+    // Hardcoded solution to Bograth 2 and 4 sharing hotspots
+    if(puzzle["zone"] == "Bograth" && puzzle["level"] == 2) {
+        return increases(wScreenVisible) && wHotspot_Table == puzzle["hotspot"] && is_Bograth4 == 0
+    }
+    if(puzzle["zone"] == "Bograth" && puzzle["level"] == 4) {
+        return increases(wScreenVisible) && wHotspot_Table == puzzle["hotspot"] && is_Bograth4 == 1
+    }
     if(puzzle["level"] == 5) {
         // Disable triggering on the secret cutscene as these scenes do not load any hotspots
         return increases(wScreenVisible) && wHotspot_Table == puzzle["hotspot"] && start_button_enabled()
@@ -378,6 +390,11 @@ function thirst_count(puzzle) =>
 function dresh5_chunks(puzzle) =>
     tally_of(range(1, 20), 20, chunk_id => once(xPuzzle_Misc_2 == chunk_id && prev(xPuzzle_Misc_2) != xPuzzle_Misc_2)) // We check the delta as on puzzle init we would otherwise hit a random chunk
 
+function dresh2_mud_count(puzzle) =>
+    repeated(puzzle["tiles"] + 1, xPuzzle_Misc_2 > prev(xPuzzle_Misc_2))
+
+function dresh4_switch_count(puzzle) =>
+    repeated(puzzle["triggers"] + 1, xPuzzle_Misc_3_B > prev(xPuzzle_Misc_3_B)) // n.b. this fails when you hit the switch 9 times as the var rolls back to 0, but we Pause Lock before then so it doesn't matter
 //////////////////
 // Achievements //
 //////////////////
@@ -517,6 +534,22 @@ function enter_locations(puz) {
         points = puz["points2"],
         description = "Challenge: " + puz["desc2"],
         trigger = game_loaded() && never(scene_unloaded(puz)) && measured(salafy_locations(puz), when=in_scenes(puz)) && puzzle_end(puz)
+    )
+}
+function dresh2_mud(puz) {
+    achievement(
+        title = puz["title2"],
+        points = puz["points2"],
+        description = "Challenge: Complete the " + ordinal(puz) + " whilst triggering a mudslide no more than " + puz["tiles"] + " times",
+        trigger = game_loaded() && in_scenes(puz) && is_Bograth4 == 0 && disable_when(dresh2_mud_count(puz), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
+    )
+}
+function dresh4_switch(puz) {
+    achievement(
+        title = puz["title2"],
+        points = puz["points2"],
+        description = "Challenge: Complete the " + ordinal(puz) + " whilst only pressing the last three switches no more than " + puz["triggers"] + " times",
+        trigger = game_loaded() && in_scenes(puz) && is_Bograth4 == 1 && disable_when(dresh4_switch_count(puz), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
     )
 }
 
@@ -991,7 +1024,7 @@ add_puzzle("Kybar's Teeth", 4, {
     "hotspot": Hotspot_KybarsTeeth_Puzzle4,
     "hotspot2": 0,
     "complete": [Script_KybarsTeeth_Puzzle4_Complete],
-    "title": "Stop With the Parmalagas",
+    "title": "Stop With the Parmalags",
     "points": 3,
     "challenge": speedrun,
     "title2": "Dancing with the Parmalags",
@@ -1010,7 +1043,76 @@ add_puzzle("Kybar's Teeth", 5, {
     "points2": 3,
     "time": "3 seconds",
     "frames": 3*60 - 1
-    
+})
+add_puzzle("Bograth", 1, {
+    "hotspot": Hotspot_Bograth_Puzzle1,
+    "hotspot2": 0,
+    "complete": [Script_Bograth_Puzzle1_Complete],
+    "title": "Trekking Through Mud",
+    "points": 3,
+    "challenge": parmalag_avoid,
+    "title2": "Keeping Dry",
+    "points2": 4,
+    "parmalags": 12,
+    "parmalags_move": 12,
+})
+add_puzzle("Bograth", 2, {
+    "hotspot": Hotspot_Bograth_Puzzle24, // Hardcoded differentiation of these two hotspots in the mud function
+    "hotspot2": 0,
+    "complete": [Script_Bograth_Puzzle2_Complete, Script_Bograth_Puzzle2_SecretComplete],
+    "title": "Bogged Down",
+    "points": 3,
+    "challenge": dresh2_mud,
+    "title2": "Conserving Energy",
+    "points2": 4,
+    "tiles": 54 //52 is possible but let's give a bit of leeway
+})
+add_puzzle("Bograth", 3, {
+    "hotspot": Hotspot_Bograth_Puzzle3,
+    "hotspot2": 0,
+    "complete": [Script_Bograth_Puzzle3_Complete],
+    "title": "Need a Wash",
+    "points": 3,
+    "challenge": parmalag_avoid,
+    "title2": "Tight Corners",
+    "points2": 4,
+    "parmalags": 8,
+    "parmalags_move": 8,
+})
+add_puzzle("Bograth", 4, {
+    "hotspot": Hotspot_Bograth_Puzzle24, // Hardcoded differentiation of these two hotspots in the mud function
+    "hotspot2": 0,
+    "complete": [Script_Bograth_Puzzle4_Complete],
+    "title": "Ganges",
+    "points": 3,
+    "challenge": dresh4_switch,
+    "title2": "Genius",
+    "points2": 4,
+    "triggers": 4
+})
+add_puzzle("Bograth", 5, {
+    "hotspot": Hotspot_Bograth_Puzzle5,
+    "hotspot2": 0,
+    "complete": [Script_Bograth_Puzzle5_Complete],
+    "title": "Parmesan Cheese",
+    "points": 3,
+    "challenge": speedrun,
+    "title2": "Grating Fast",
+    "points2": 3,
+    "time": "13 seconds",
+    "frames": 13*60 - 1
+})
+add_puzzle("Paradwyn", 1, {
+    "hotspot": Hotspot_Paradwyn_Puzzle1,
+    "hotspot2": 0,
+    "complete": [Script_Paradwyn_Puzzle1_Complete],
+    "title": "Paradise Lost",
+    "points": 3,
+    "challenge": speedrun,
+    "title2": "Star Trek",
+    "points2": 3,
+    "time": "30 seconds",
+    "frames": 30*60 - 1
 })
 
 
