@@ -175,6 +175,8 @@ Script_Underneath_Puzzle3_Transition = [bank_address(0x054BDC), bank_address(0x0
 Script_Naroom_Puzzle2_Transition = [bank_address(0x03EF64), bank_address(0x03EF8F)]
 Script_Naroom_Puzzle5_Transition = [bank_address(0x03FCFF), bank_address(0x03FD2A)]
 
+Script_EndCredits = bank_address(0x038728) //0E:4728
+
 //////////
 // WRAM //
 //////////
@@ -241,6 +243,10 @@ xPuzzle_Misc_2 = byte(0xA133)
 xPuzzle_Misc_3_B = byte(0xA13D)
 
 is_Bograth4 = bit2(xBits_Puzzle_Bits3)
+
+xStaffOfHyrenQuest = byte(0xA136)
+xOverworld1_SecretsCompleted = byte(0xA138)
+xOverworld2_SecretsCompleted = byte(0xA139)
 
 //////////
 // Misc //
@@ -398,6 +404,52 @@ function dresh2_mud_count(puzzle) =>
 
 function dresh4_switch_count(puzzle) =>
     repeated(puzzle["triggers"] + 1, xPuzzle_Misc_3_B > prev(xPuzzle_Misc_3_B)) // n.b. this fails when you hit the switch 9 times as the var rolls back to 0, but we Pause Lock before then so it doesn't matter
+
+/*
+RATOOLS 1.14.1 bugs out with this setup
+function pow(exponent) {
+    n = 1
+    for i in range(1, exponent) {
+        n = n*2
+    }
+    return n
+}
+
+function bitmask(bits) =>
+    pow(bits) - 1
+    
+function core_switch_count(puzzle) =>
+    repeated(puzzle["presses"], (dword(xBits_Puzzle_Bits1) & bitmask(puzzle["switches"])) > (prev(dword(xBits_Puzzle_Bits1)) & bitmask(puzzle["switches"]))) && byte(0) == pow(9)
+*/
+
+function _generate_bitcount(address, bits) {
+    if(bits >= 8) {
+        return _generate_bitcount(address + 1, bits - 8) + bitcount(address)
+    }
+    if(bits == 0) {
+        return 0
+    }
+    return sum_of(range(0, bits - 1), i => bit(i, address))
+}
+
+function generate_bitcount(bits) {
+    address = xBits_Puzzle_Bits1
+    return _generate_bitcount(xBits_Puzzle_Bits1, bits)
+}
+
+
+function core_switch_count(puzzle) =>
+    repeated(puzzle["presses"] + 1, generate_bitcount(puzzle["switches"]) > prev(generate_bitcount(puzzle["switches"])))
+
+// Map to virtual address https://github.com/RetroAchievements/rcheevos/blob/develop/src/rcheevos/consoleinfo.c#L456
+function wram(address, bank) =>
+    byte(address - 0xD000 + 0x10000 + 0x1000*(bank-2))
+core_beacon_on_tileid = 0x6F
+core5_tiles = [0xD2E9, 0xD2ED, 0xD055, 0xD056, 0xD057]
+function core4_count(puzzle) =>
+    all_of(core5_tiles, tile_addr => wram(tile_addr, 3) == core_beacon_on_tileid)
+
+
 //////////////////
 // Achievements //
 //////////////////
@@ -562,6 +614,25 @@ function dresh4_switch(puz) {
         description = "Challenge: Complete the " + ordinal(puz) + " whilst only pressing the last three switches no more than " + puz["triggers"] + " times",
         trigger = game_loaded() && in_scenes(puz) && is_Bograth4 == 1 && disable_when(dresh4_switch_count(puz), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
     )
+}
+function core_switches(puz) {
+    achievement(
+        title = puz["title2"],
+        points = puz["points2"],
+        description = "Challenge: " + puz["desc2"],
+        trigger = game_loaded() && in_scenes(puz) && disable_when(core_switch_count(puz), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
+    )
+}
+function core4(puz) {
+    achievement(
+        title = puz["title2"],
+        points = puz["points2"],
+        description = "Challenge: " + puz["desc2"],
+        trigger = game_loaded() && in_scenes(puz) && core4_count(puz) && trigger_when(puzzle_end(puz))
+    )
+}
+function no_challenge(puz) {
+    return 0
 }
 
 
@@ -1173,6 +1244,64 @@ add_puzzle("Paradwyn", 5, {
     "time": "1 minute",
     "frames": 60*60 - 1
 })
+add_puzzle("Core", 1, {
+    "hotspot": Hotspot_Core_Puzzle1,
+    "hotspot2": 0,
+    "complete": [Script_Core_Puzzle1_Complete],
+    "title": "Endless Pit",
+    "points": 3,
+    "challenge": speedrun,
+    "title2": "Tightrope Walking",
+    "points2": 3,
+    "time": "20 seconds",
+    "frames": 20*60 - 1
+})
+add_puzzle("Core", 2, {
+    "hotspot": Hotspot_Core_Puzzle2,
+    "hotspot2": 0,
+    "complete": [Script_Core_Puzzle2_Complete, Script_Core_Puzzle2_SecretComplete],
+    "title": "Why Do I Keep Falling?",
+    "points": 3,
+    "challenge": core_switches,
+    "title2": "Again and Again",
+    "points2": 3,
+    "desc2": "Complete the second Core puzzle whilst pressing no more than 10 switches",
+    "switches": 9, // We are only counting the 9 outside switches, and not the 5 inner ones since we know they will all be pressed once
+    "presses": 5, // We are only counting the outside switches since the 5 inner ones must all be pressed once and can only be pressed once
+})
+add_puzzle("Core", 3, {
+    "hotspot": Hotspot_Core_Puzzle3,
+    "hotspot2": 0,
+    "complete": [Script_Core_Puzzle3_Complete],
+    "title": "Game of Chance",
+    "points": 3,
+    "challenge": speedrun,
+    "title2": "Card Counter",
+    "points2": 3,
+    "time": "30 seconds",
+    "frames": 30*60 - 1
+})
+add_puzzle("Core", 4, {
+    "hotspot": Hotspot_Core_Puzzle4,
+    "hotspot2": 0,
+    "complete": [Script_Core_Puzzle4_Complete],
+    "title": "Final Level",
+    "points": 3,
+    "challenge": core4,
+    "title2": "Don't Skip the Dishes",
+    "desc2": "Complete the fourth Core puzzle after lighting up all 5 beacons on the right side of the map",
+    "points2": 3,
+})
+add_puzzle("Core", 5, {
+    "hotspot": Hotspot_Core_Puzzle5,
+    "hotspot2": 0,
+    "complete": [Script_Core_Puzzle5_Complete],
+    "title": "Agram's Puzzle",
+    "points": 3,
+    "challenge": no_challenge, // Let's be nice, no challenge for this one
+})
+
+
 Script_WeaveStatue1 = bank_address(0x027D74)
 Script_WeaveStatue2 = bank_address(0x027DDA)
 achievement(
@@ -1181,5 +1310,62 @@ achievement(
     description = "Learn how to open the Training Room closet by finding the instructions on two of the Weave statues",
     trigger = game_loaded() && measured(tally_of([Script_WeaveStatue1, Script_WeaveStatue2], 2, script => once(system(script))))
 )
+
+function ending_core_wand() =>
+    xStaffOfHyrenQuest == 1 && xOverworld2_SecretsCompleted == 5
+
+function ending_core_crystal() =>
+    xStaffOfHyrenQuest == 2 && xOverworld1_SecretsCompleted == 5 && xOverworld2_SecretsCompleted == 5
+
+function ending_core_backup() =>
+    xStaffOfHyrenQuest == 3 && xOverworld2_SecretsCompleted == 5
+
+function ending_normal_vash() =>
+    (xStaffOfHyrenQuest == 1 || xStaffOfHyrenQuest == 3) && xOverworld2_SecretsCompleted < 5
+
+function ending_normal_glade() =>
+    (xStaffOfHyrenQuest == 2 && xOverworld1_SecretsCompleted + xOverworld2_SecretsCompleted < 10) ||
+    (xStaffOfHyrenQuest == 0)
+
+function credits(title, points, desc, func) {
+    achievement(
+        title = title,
+        points = points,
+        description = desc,
+        trigger = game_loaded() && master(Script_EndCredits) && func()
+    )
+}
+
+credits(
+    "Good Ending 1: Vanilla Victory",
+    25, "Beat the Core after finding all 10 pieces of the Staff of Hyren, choosing to pursue the Wand first",
+    ending_core_wand
+)
+credits(
+    "Good Ending 2: Tyranny",
+    25, "Beat the Core after finding all 10 pieces of the Staff of Hyren, choosing to pursue the Crystal first",
+    ending_core_crystal
+)
+credits(
+    "Good Ending 3: Lower Taxes",
+    25, "Beat the Core after finding 0-4 Wand pieces, then finding all the Crystal pieces. If prompted, choose to pursue the Wand first",
+    ending_core_backup
+)
+credits(
+    "Normal Ending 1: Keeper's Staff",
+    10, "Beat Paradwyn after finding no pieces of the Staff of Hyren at all, or alternatively beat Arderial after choosing to pursue the Crystal first while finding only 1-9 pieces of the Staff of Hyren",
+    ending_normal_glade
+)
+credits(
+    "Normal Ending 2: Crystal Pendant",
+    10, "Beat Paradwyn after finding 0-4 Wand pieces, then finding 1-4 Crystal pieces. If prompted, choose to pursue the Wand first",
+    ending_normal_vash
+)
+
+//Ormagon
+
 // DONT FORGET TO ADD INVINCIBILITY CHECK
 
+// Unlock TUrret room secret
+// Beat turret room
+// 
