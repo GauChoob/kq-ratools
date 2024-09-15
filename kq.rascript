@@ -99,7 +99,90 @@ Hotspot_Weave_Puzzle2 = 0x4E95
 Hotspot_Weave_Puzzle3 = 0x4E9E
 Hotspot_Weave_Puzzle4 = 0x4EA3
 Hotspot_Weave_Puzzle5 = 0x4EA8
+hotspots = {
+    Hotspot_Arderial_Main: "Arderial",
+    Hotspot_Arderial_Puzzle1: "Arderial Puzzle 1",
+    Hotspot_Arderial_Puzzle2: "Arderial Puzzle 2",
+    Hotspot_Arderial_Puzzle4: "Arderial Puzzle 4",
+    Hotspot_Arderial_Puzzle3: "Arderial Puzzle 3",
+    Hotspot_Arderial_Puzzle5: "Arderial Puzzle 5",
+    Hotspot_DeveloperRoom: "CHEATING! DEVELOPER'S ROOM!",
+    Hotspot_StartRoom: "Start Room",
+    Hotspot_Turret: "Turret Minigame",
+    Hotspot_Bograth_Main: "Bograth",
+    Hotspot_Bograth_Puzzle1: "Bograth Puzzle 1",
+    Hotspot_Bograth_Puzzle24: "Bograth Puzzle 2", // We will hard-code Puzzle 4
+    Hotspot_Bograth_Puzzle3: "Bograth Puzzle 3",
+    Hotspot_Bograth_Puzzle5: "Bograth Puzzle 5",
+    Hotspot_Cald_Main: "Cald",
+    Hotspot_Cald_Puzzle1: "Cald Puzzle 1",
+    Hotspot_Cald_Puzzle2: "Cald Puzzle 2",
+    Hotspot_Cald_Puzzle3: "Cald Puzzle 3",
+    Hotspot_Cald_Puzzle4: "Cald Puzzle 4",
+    Hotspot_Cald_Puzzle5: "Cald Puzzle 5",
+    Hotspot_Core_Main: "Core",
+    Hotspot_Core_Puzzle5: "Core Puzzle 5",
+    Hotspot_Core_Puzzle2: "Core Puzzle 2",
+    Hotspot_Core_Puzzle3: "Core Puzzle 3",
+    Hotspot_Core_Puzzle1: "Core Puzzle 1",
+    Hotspot_Core_Puzzle4: "Core Puzzle 4",
+    Hotspot_dResh_Main: "d'Resh",
+    Hotspot_dResh_Puzzle1: "d'Resh Puzzle 1",
+    Hotspot_dResh_Puzzle3: "d'Resh Puzzle 3",
+    Hotspot_dResh_Puzzle4: "d'Resh Puzzle 4",
+    Hotspot_dResh_Puzzle2: "d'Resh Puzzle 2",
+    Hotspot_dResh_Puzzle5: "d'Resh Puzzle 5",
+    Hotspot_Tavel_Entrance: "Tavel Gorge",
+    Hotspot_Tavel_Cave: "Tavel Gorge",
+    Hotspot_KybarsTeeth_Main: "Kybar's Teeth",
+    Hotspot_KybarsTeeth_Puzzle1: "Kybar's Teeth Puzzle 1",
+    Hotspot_KybarsTeeth_Puzzle2: "Kybar's Teeth Puzzle 2",
+    Hotspot_KybarsTeeth_Puzzle3: "Kybar's Teeth Puzzle 3",
+    Hotspot_KybarsTeeth_Puzzle4: "Kybar's Teeth Puzzle 4",
+    Hotspot_KybarsTeeth_Puzzle5: "Kybar's Teeth Puzzle 5",
+    Hotspot_Naroom_Main: "Naroom",
+    Hotspot_Naroom_Puzzle1: "Naroom Puzzle 1",
+    Hotspot_Naroom_Puzzle2: "Naroom Puzzle 2",
+    Hotspot_Naroom_Puzzle3: "Naroom Puzzle 3",
+    Hotspot_Naroom_Puzzle4: "Naroom Puzzle 4",
+    Hotspot_Naroom_Puzzle5: "Naroom Puzzle 5",
+    Hotspot_Naroom_Puzzle25_End: "Naroom",
+    Hotspot_Orothe_Puzzle1: "Orothe Puzzle 1",
+    Hotspot_Orothe_Puzzle2: "Orothe Puzzle 2",
+    Hotspot_Orothe_Puzzle3: "Orothe Puzzle 3",
+    Hotspot_Orothe_Puzzle4: "Orothe Puzzle 4",
+    Hotspot_Orothe_Puzzle5: "Orothe Puzzle 5",
+    Hotspot_Orothe_Main: "Orothe",
+    Hotspot_Overworld_1: "Overworld #1",
+    Hotspot_Overworld_2: "Overworld #2",
+    Hotspot_Naroom_Demo: "CHEATING! DEMO ROOM!",
+    Hotspot_House_Cald: "Valkan's House",
+    Hotspot_House_Weave: "Bo'Ahsa's House",
+    Hotspot_House_Orothe: "Blu's House",
+    Hotspot_House_Bograth: "Obgren's House",
+    Hotspot_Naroom_TrainingRoom_Normal: "Naroom Training Room",
+    Hotspot_Paradwyn_Main: "Paradwyn",
+    Hotspot_Paradwyn_Puzzle1: "Paradwyn Puzzle 1",
+    Hotspot_Paradwyn_Puzzle2: "Paradwyn Puzzle 2",
+    Hotspot_Paradwyn_Puzzle4: "Paradwyn Puzzle 4",
+    Hotspot_Paradwyn_Puzzle3: "Paradwyn Puzzle 3",
+    Hotspot_Paradwyn_Puzzle5: "Paradwyn Puzzle 5",
+    Hotspot_Underneath_Main: "Underneath",
+    Hotspot_Underneath_Puzzle1: "Underneath Puzzle 1",
+    Hotspot_Underneath_Puzzle2: "Underneath Puzzle 2",
+    Hotspot_Underneath_Puzzle3: "Underneath Puzzle 3",
+    Hotspot_Underneath_Puzzle4: "Underneath Puzzle 4",
+    Hotspot_Underneath_Puzzle5: "Underneath Puzzle 5",
+    Hotspot_Weave_Main: "Weave",
+    Hotspot_Weave_Puzzle1: "Weave Puzzle 1",
+    Hotspot_Weave_Puzzle2: "Weave Puzzle 2",
+    Hotspot_Weave_Puzzle3: "Weave Puzzle 3",
+    Hotspot_Weave_Puzzle4: "Weave Puzzle 4",
+    Hotspot_Weave_Puzzle5: "Weave Puzzle 5",
+}
 
+
+// System:
 Script_dResh_Puzzle1_Complete = bank_address(0x0282F4)
 Script_dResh_Puzzle3_Complete = bank_address(0x0286B2)
 Script_dResh_Puzzle4_Complete = bank_address(0x028A19)
@@ -166,7 +249,11 @@ Script_Core_Puzzle2_SecretComplete = bank_address(0x0589F6)
 Script_Bograth_Puzzle2_SecretComplete = bank_address(0x05E796)
 Script_Cald_Puzzle2_SecretComplete = bank_address(0x063205)
 Script_Orothe_Puzzle1_SecretComplete = bank_address(0x05C404)
+
+// Text:
 Script_StartRoom_SecretComplete = bank_address(0x061F2A)
+Script_TurretEnd = bank_address(0x0389A1)
+Script_TurretOverload = bank_address(0x038AA9)
 
 // Transition: System can be the first frame of the hotspot
 // Master takes over when SceneNew(), include the value on the first frame that screen is on for safety purposes
@@ -175,7 +262,8 @@ Script_Underneath_Puzzle3_Transition = [bank_address(0x054BDC), bank_address(0x0
 Script_Naroom_Puzzle2_Transition = [bank_address(0x03EF64), bank_address(0x03EF8F)]
 Script_Naroom_Puzzle5_Transition = [bank_address(0x03FCFF), bank_address(0x03FD2A)]
 
-Script_EndCredits = bank_address(0x038728) //0E:4728
+// Master:
+Script_EndCredits = bank_address(0x038728)
 
 //////////
 // WRAM //
@@ -248,6 +336,39 @@ xStaffOfHyrenQuest = byte(0xA136)
 xOverworld1_SecretsCompleted = byte(0xA138)
 xOverworld2_SecretsCompleted = byte(0xA139)
 
+xBits_Ormagon_1 = 0xA02C
+xBits_Ormagon_2 = 0xA02D
+Ormagon_Trophy = bit1(xBits_Ormagon_1)
+Ormagon_Jar = bit2(xBits_Ormagon_1)
+Ormagon_Fungus = bit4(xBits_Ormagon_1)
+Ormagon_Fungicide = bit6(xBits_Ormagon_1)
+Ormagon_Encountered = bit7(xBits_Ormagon_1)
+ormagon_steps = [Ormagon_Trophy, Ormagon_Jar, Ormagon_Fungus, Ormagon_Fungicide, Ormagon_Encountered]
+
+xNumberOfAttempts = byte(0xA132)
+xTurret_HighScore = byte(0xA191)
+
+
+xBits_Orothe = bitcount(0xA032)
+xBits_Arderial = bitcount(0xA033)
+xBits_Naroom = bitcount(0xA034)
+xBits_Underneath = bitcount(0xA035)
+xBits_Cald = bitcount(0xA036)
+xBits_Weave = bitcount(0xA037)
+xBits_dResh = bitcount(0xA038)
+xBits_KybarsTeeth = bitcount(0xA039)
+xBits_Bograth = bitcount(0xA03A)
+xBits_Paradwyn = bitcount(0xA03B)
+xBits_Core = bitcount(0xA03C)
+_puzzle_progress = [xBits_Orothe, xBits_Arderial, xBits_Naroom, xBits_Underneath, xBits_Cald, xBits_Weave, xBits_dResh, xBits_KybarsTeeth, xBits_Bograth, xBits_Paradwyn, xBits_Core]
+function puzzle_progress() =>
+    sum_of(_puzzle_progress, bits => bits)
+
+
+xBits_Secrets_1 = bitcount(0xA04A)
+xBits_Secrets_2 = bitcount(0xA04B)
+function secrets_progress() =>
+    xBits_Secrets_1 + xBits_Secrets_2
 //////////
 // Misc //
 //////////
@@ -272,7 +393,7 @@ function text(address) =>
     wScript_Text == address
 
 function no_cheat() =>
-    always_true()//wSalafyInvincible == 0 TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+    wSalafyInvincible == 0
 
 
 /////////////////////////////
@@ -293,12 +414,39 @@ cardinals = {
     4: "Puzzle 4",
     5: "Secret Puzzle"
 }
+shorthands = {
+    /*"Underneath": 1,
+    "Cald": 2,
+    "Naroom": 3,
+    "Orothe": 4,
+    "Arderial": 5,
+    "Weave": 6,
+    "d'Resh": 7,
+    "Kybar's Teeth": 8,
+    "Bograth": 9,
+    "Paradwyn": 10,
+    "Core": 11*/
+    "Underneath": "U",
+    "Cald": "C",
+    "Naroom": "N",
+    "Orothe": "O",
+    "Arderial": "A",
+    "Weave": "W",
+    "d'Resh": "D",
+    "Kybar's Teeth": "K",
+    "Bograth": "B",
+    "Paradwyn": "P",
+    "Core": "X"
+}
 // "first Underneath puzzle"
 function ordinal(puzzle) =>
     ordinals[puzzle["level"]] + " " + puzzle["zone"] + " puzzle"
 // "Underneath Puzzle 1"
 function cardinal(puzzle) =>
     puzzle["zone"] + " " + cardinals[puzzle["level"]]
+// "1-1"
+function shorthand(puzzle) =>
+    shorthands[puzzle["zone"]] + "-" + puzzle["level"] + ": "
 
 // The hotspot for the end of the puzzle is activated
 function scene_end(puzzle) =>
@@ -469,17 +617,19 @@ function core4_count(puzzle) =>
 
 function puzzle(puz) {
     achievement(
-        title = cardinal(puz) + puz["title"], // TODO remove cardinal(puz)
+        title = shorthand(puz) + puz["title"], // TODO remove cardinal(puz)
         points = puz["points"],
         description = "Complete the " + ordinal(puz),
+        type = puz["type1"],
         trigger = game_loaded() && scene_end(puz) && puzzle_end(puz)
     )
 }
 function normal_only(puz) {
     achievement(
-        title = puz["title2"],
+        title = shorthand(puz) + puz["title2"],
         points = puz["points2"],
         description = "Challenge: " + puz["desc2"],
+        type = puz["type2"],
         trigger = game_loaded() && scene_end(puz) && system(puz["complete"][0])
     )
 }
@@ -497,137 +647,154 @@ function timeboard(puz) {
 }
 function speedrun(puz) {
     achievement(
-        title = puz["title2"],
+        title = shorthand(puz) + puz["title2"],
         points = puz["points2"],
         description = "Challenge: Complete the " + ordinal(puz) + " in under " + puz["time"],
+        type = puz["type2"],
         trigger = game_loaded() && in_scenes(puz) && disable_when(repeated(puz["frames"], always_true()), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
     )
 }
 function speedrun_secret(puz) {
     achievement(
-        title = puz["title2"],
+        title = shorthand(puz) + puz["title2"],
         points = puz["points2"],
         description = "Challenge: " + puz["desc2"],
+        type = puz["type2"],
         trigger = game_loaded() && in_scenes(puz) && disable_when(repeated(puz["frames"], always_true()), until=scene_loads(puz)) && trigger_when(puzzle_end_secret(puz))
     )
 }
 function parmalag_avoid(puz) {
     achievement(
-        title = puz["title2"],
+        title = shorthand(puz) + puz["title2"],
         points = puz["points2"],
         description = "Challenge: Complete the " + ordinal(puz) + " without triggering Parmalags more than " + puz["parmalags_move"] + " times",
+        type = puz["type2"],
         trigger = game_loaded() && in_scenes(puz) && disable_when(parmalags_move(puz), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
     )
 }
 function arbolits_avoid(puz) {
     achievement(
-        title = puz["title2"],
+        title = shorthand(puz) + puz["title2"],
         points = puz["points2"],
         description = "Challenge: Complete the " + ordinal(puz) + " without triggering Arbolits more than " + puz["arbolits_move"] + " times",
+        type = puz["type2"],
         trigger = game_loaded() && in_scenes(puz) && disable_when(arbolits_move(puz), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
     )
 }
 function enter_box(puz) {
     achievement(
-        title = puz["title2"],
+        title = shorthand(puz) + puz["title2"],
         points = puz["points2"],
         description = "Challenge: " + puz["desc2"],
+        type = puz["type2"],
         trigger = game_loaded() && in_scenes(puz) && never(scene_unloaded(puz)) && once(salafy_rectangle(puz)) && trigger_when(puzzle_end(puz))
     )
 }
 function enter_locations(puz) {
     achievement(
-        title = puz["title2"],
+        title = shorthand(puz) + puz["title2"],
         points = puz["points2"],
         description = "Challenge: " + puz["desc2"],
+        type = puz["type2"],
         trigger = game_loaded() && in_scenes(puz) && never(scene_unloaded(puz)) && once(salafy_locations(puz)) && trigger_when(puzzle_end(puz))
     )
 }
 function kicks(puz) {
     achievement(
-        title = puz["title2"],
+        title = shorthand(puz) + puz["title2"],
         points = puz["points2"],
         description = "Challenge: Complete the " + ordinal(puz) + " whilst kicking no more than " + puz["kicks"] + " times",
+        type = puz["type2"],
         trigger = game_loaded() && in_scenes(puz) && disable_when(salafy_kicks_block(puz), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
     )
 }
 function bubbles(puz) {
     achievement(
-        title = puz["title2"],
+        title = shorthand(puz) + puz["title2"],
         points = puz["points2"],
         description = "Challenge: Complete the " + ordinal(puz) + " with at least " + puz["bubbles"] + " bubbles",
+        type = puz["type2"],
         trigger = game_loaded() && in_scenes(puz) && min_bubbles(puz) && trigger_when(puzzle_end(puz))
     )
 }
 function flarps(puz) {
     achievement(
-        title = puz["title2"],
+        title = shorthand(puz) + puz["title2"],
         points = puz["points2"],
         description = "Challenge: Complete the " + ordinal(puz) + " whilst kicking Flarps no more than " + puz["kicks"] + " times",
+        type = puz["type2"],
         trigger = game_loaded() && in_scenes(puz) && disable_when(salafy_kicks_flarp(puz), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
     )
 }
 function actor_still(puz) {
     achievement(
-        title = puz["title2"],
+        title = shorthand(puz) + puz["title2"],
         points = puz["points2"],
         description = "Challenge: " + puz["desc2"],
+        type = puz["type2"],
         trigger = game_loaded() && in_scenes(puz) && disable_when(actor_moved(puz), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
     )
 }
 function thirst(puz) {
     achievement(
-        title = puz["title2"],
+        title = shorthand(puz) + puz["title2"],
         points = puz["points2"],
         description = "Challenge: Complete the " + ordinal(puz) + " whilst drinking no more than " + puz["drinks"] + " times",
+        type = puz["type2"],
         trigger = game_loaded() && in_scenes(puz) && disable_when(thirst_count(puz), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
     )
 }
 function dresh5(puz) {
     achievement(
-        title = puz["title2"],
+        title = shorthand(puz) + puz["title2"],
         points = puz["points2"],
         description = "Challenge: Complete the " + ordinal(puz) + " after exploring the entire map",
+        type = puz["type2"],
         trigger = game_loaded() && never(scene_unloaded(puz)) && measured(dresh5_chunks(puz), when=in_scenes(puz)) && puzzle_end(puz)
     )
 }
 function enter_locations(puz) {
     achievement(
-        title = puz["title2"],
+        title = shorthand(puz) + puz["title2"],
         points = puz["points2"],
         description = "Challenge: " + puz["desc2"],
+        type = puz["type2"],
         trigger = game_loaded() && never(scene_unloaded(puz)) && measured(salafy_locations(puz), when=in_scenes(puz)) && puzzle_end(puz)
     )
 }
 function dresh2_mud(puz) {
     achievement(
-        title = puz["title2"],
+        title = shorthand(puz) + puz["title2"],
         points = puz["points2"],
         description = "Challenge: Complete the " + ordinal(puz) + " whilst triggering a mudslide no more than " + puz["tiles"] + " times",
+        type = puz["type2"],
         trigger = game_loaded() && in_scenes(puz) && is_Bograth4 == 0 && disable_when(dresh2_mud_count(puz), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
     )
 }
 function dresh4_switch(puz) {
     achievement(
-        title = puz["title2"],
+        title = shorthand(puz) + puz["title2"],
         points = puz["points2"],
         description = "Challenge: Complete the " + ordinal(puz) + " whilst only pressing the last three switches no more than " + puz["triggers"] + " times",
+        type = puz["type2"],
         trigger = game_loaded() && in_scenes(puz) && is_Bograth4 == 1 && disable_when(dresh4_switch_count(puz), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
     )
 }
 function core_switches(puz) {
     achievement(
-        title = puz["title2"],
+        title = shorthand(puz) + puz["title2"],
         points = puz["points2"],
         description = "Challenge: " + puz["desc2"],
+        type = puz["type2"],
         trigger = game_loaded() && in_scenes(puz) && disable_when(core_switch_count(puz), until=scene_loads(puz)) && trigger_when(puzzle_end(puz))
     )
 }
 function core4(puz) {
     achievement(
-        title = puz["title2"],
+        title = shorthand(puz) + puz["title2"],
         points = puz["points2"],
         description = "Challenge: " + puz["desc2"],
+        type = puz["type2"],
         trigger = game_loaded() && in_scenes(puz) && core4_count(puz) && trigger_when(puzzle_end(puz))
     )
 }
@@ -643,10 +810,19 @@ function add_puzzle(zone, level, puz) {
     if(puz["hotspot2"] == 0) {
         puz["hotspot2"] = puz["hotspot"]
     }
+    puz["type1"] = "progression"
+    puz["type2"] = ""
+    if(level == 5) {
+    puz["type1"] = ""
+    }
+    if(zone == "Core") {
+        puz["type1"] = "missable"
+        puz["type2"] = "missable"
+    }
     puzzle(puz)
     timeboard(puz)
 
-    //puz["challenge"](puz) // crashes in 1.14.1 so
+    //puz["challenge"](puz) // crashes in 1.14.1 so split into two lines:
     challenge = puz["challenge"]
     challenge(puz)
 }
@@ -1311,6 +1487,16 @@ achievement(
     trigger = game_loaded() && measured(tally_of([Script_WeaveStatue1, Script_WeaveStatue2], 2, script => once(system(script))))
 )
 
+function ormagon_progress() =>
+    sum_of(ormagon_steps, step => step)
+
+achievement(
+    title = "OrmaGone",
+    points = 10,
+    description = "Encounter Ormagon by opening the Training Room closet and talking to people in their houses",
+    trigger = game_loaded() && measured(ormagon_progress() == length(ormagon_steps)) && prev(Ormagon_Encountered) == 0
+)
+
 function ending_core_wand() =>
     xStaffOfHyrenQuest == 1 && xOverworld2_SecretsCompleted == 5
 
@@ -1332,6 +1518,7 @@ function credits(title, points, desc, func) {
         title = title,
         points = points,
         description = desc,
+        type = "win_condition",
         trigger = game_loaded() && master(Script_EndCredits) && func()
     )
 }
@@ -1362,10 +1549,80 @@ credits(
     ending_normal_vash
 )
 
-//Ormagon
+achievement(
+    title = "Not Just Samples",
+    points = 3,
+    description = "Find the secret in the starting room",
+    trigger = game_loaded() && scene_end({"hotspot2": Hotspot_StartRoom}) && text(Script_StartRoom_SecretComplete)
+)
 
-// DONT FORGET TO ADD INVINCIBILITY CHECK
+puz_turret = {
+    "zone": 0,
+    "level": 0,
+    "hotspot": Hotspot_Turret,
+    "hotspot2": Hotspot_Turret,
+    "complete": [Script_TurretEnd, Script_TurretOverload]
+}
+achievement(
+    title = "ENERGY OVERLOAD!",
+    points = 25,
+    description = "Reach a score of 255 in the Turret Minigame",
+    trigger = game_loaded() && scene_end(puz_turret) && text(puz_turret["complete"][1])
+)
+leaderboard(
+    title = "Turret Minigame",
+    description = "Most energy pellets collected",
+    start = game_loaded() && scene_loads(puz_turret),
+    cancel = scene_unloaded(puz_turret),
+    submit = __ornext(any_of(puz_turret["complete"], script => text(script))),
+    value = xNumberOfAttempts,
+    format = "VALUE",
+    lower_is_better = false
+)
 
-// Unlock TUrret room secret
-// Beat turret room
-// 
+///////////////////
+// RICH PRESENCE //
+///////////////////
+
+staff_of_hyren_lookup = {
+    0: "Bright-eyed and fumbling around.",
+    1: "Searching for the Staff of Hyren (Route 1).",
+    2: "Being bullied by Korg and Zet (Route 2).",
+    3: "Collecting crystals (Route 3).",
+    4: "Beat the game!"
+}
+ormagon_lookup = {
+    0: "0%.",
+    1: "20%.",
+    2: "40%.",
+    3: "60%.",
+    4: "80%.",
+    5: "Complete!"
+}
+rich_presence_conditional_display(
+    wHotspot_Table == 0,
+    "Loading Keeper's Quest!"
+)
+rich_presence_conditional_display(
+    wHotspot_Table == Hotspot_Turret,
+    "Turret Minigame! Score {0}. High Score: {1}",
+    rich_presence_value("TurretScore", xNumberOfAttempts, "VALUE"),
+    rich_presence_value("TurretRecord", xTurret_HighScore, "VALUE")
+)
+rich_presence_conditional_display(
+    wHotspot_Table == Hotspot_Bograth_Puzzle24 && is_Bograth4 == 1,
+    "{0} Location: Bograth Puzzle 4. Puzzle Progress: {1}/66. Secret Puzzles Completed: {2}/11. Ormagon Quest: {3} Turret High Score: {4}.", // Hardcode Bograth Puzzle 4 as it shares hotspots with Puzzle 2
+    rich_presence_lookup("Quest", xStaffOfHyrenQuest, staff_of_hyren_lookup, "???"),
+    rich_presence_value("Puzzles", puzzle_progress(), "VALUE"),
+    rich_presence_value("Puzzles", secrets_progress(), "VALUE"),
+    rich_presence_lookup("Ormagon", ormagon_progress(), ormagon_lookup, "???"),
+    rich_presence_value("TurretRecord", xTurret_HighScore, "VALUE")
+)
+rich_presence_display(
+    "{0} Location: {1}. Puzzle Progress: {2}/66. Secret Puzzles Completed: {3}/11. Ormagon Quest: {4}",
+    rich_presence_lookup("Quest", xStaffOfHyrenQuest, staff_of_hyren_lookup, "???"),
+    rich_presence_lookup("Location", wHotspot_Table, hotspots, "???"),
+    rich_presence_value("Puzzles", puzzle_progress(), "VALUE"),
+    rich_presence_value("Puzzles", secrets_progress(), "VALUE"),
+    rich_presence_lookup("Ormagon", ormagon_progress(), ormagon_lookup, "???")
+)
