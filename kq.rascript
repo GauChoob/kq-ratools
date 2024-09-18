@@ -1110,7 +1110,7 @@ add_puzzle("Arderial", 4, {
     "hotspot2": 0,
     "complete": [Script_Arderial_Puzzle4_Complete],
     "title": "Quartered",
-    "points": 5,
+    "points": 10,
     "challenge": speedrun,
     "title2": "Piece of Pie",
     "points2": 3,
@@ -1133,7 +1133,7 @@ add_puzzle("Weave", 1, {
     "hotspot2": 0,
     "complete": [Script_Weave_Puzzle1_Complete],
     "title": "Blocky Jungle",
-    "points": 3999999999999999999999999999999999999999999999,
+    "points": 3,
     "challenge": speedrun,
     "title2": "Kick Kick",
     "points2": 3,
@@ -1156,7 +1156,7 @@ add_puzzle("Weave", 3, {
     "hotspot2": 0,
     "complete": [Script_Weave_Puzzle3_Complete],
     "title": "Flarp Conveyer",
-    "points": 3,
+    "points": 4,
     "challenge": flarps,
     "title2": "Flarp Chain",
     "points2": 3,
@@ -1167,7 +1167,7 @@ add_puzzle("Weave", 4, {
     "hotspot2": 0,
     "complete": [Script_Weave_Puzzle4_Complete],
     "title": "Flarp Highway",
-    "points": 3,
+    "points": 5,
     "challenge": flarps,
     "title2": "Getting the Hang of This",
     "points2": 3,
@@ -1178,7 +1178,7 @@ add_puzzle("Weave", 5, {
     "hotspot2": 0,
     "complete": [Script_Weave_Puzzle5_Complete],
     "title": "Shooty Tooty",
-    "points": 3,
+    "points": 5,
     "challenge": speedrun,
     "title2": "Dodgey Modgey",
     "points2": 3,
@@ -1205,7 +1205,7 @@ add_puzzle("d'Resh", 2, {
     "points": 3,
     "challenge": thirst,
     "title2": "Hydro Homie",
-    "points2": 3,
+    "points2": 4,
     "thirst_byte": xPuzzle_Misc_2,
     "drinks": 2
 })
@@ -1214,7 +1214,7 @@ add_puzzle("d'Resh", 3, {
     "hotspot2": 0,
     "complete": [Script_dResh_Puzzle3_Complete],
     "title": "Merry-Go-Round",
-    "points": 3,
+    "points": 4,
     "challenge": flarps,
     "title2": "Precision Operator",
     "points2": 3,
@@ -1225,7 +1225,7 @@ add_puzzle("d'Resh", 4, {
     "hotspot2": 0,
     "complete": [Script_dResh_Puzzle4_Complete],
     "title": "Laser Watch",
-    "points": 3,
+    "points": 5,
     "challenge": speedrun,
     "title2": "Cyclops",
     "points2": 3,
@@ -1237,20 +1237,20 @@ add_puzzle("d'Resh", 5, {
     "hotspot2": 0,
     "complete": [Script_dResh_Puzzle5_Complete],
     "title": "Searching for the Oacis",
-    "points": 3,
+    "points": 5,
     "challenge": dresh5,
     "title2": "Cartographer",
-    "points2": 3,
+    "points2": 4,
 })
 add_puzzle("Kybar's Teeth", 1, {
     "hotspot": Hotspot_KybarsTeeth_Puzzle1,
     "hotspot2": 0,
     "complete": [Script_KybarsTeeth_Puzzle1_Complete],
     "title": "Cacophony",
-    "points": 3,
+    "points": 1,
     "challenge": speedrun,
     "title2": "Pure Chaos",
-    "points2": 3,
+    "points2": 2,
     "time": "2 seconds",
     "frames": 2*60 - 1
 })
@@ -1259,10 +1259,10 @@ add_puzzle("Kybar's Teeth", 2, {
     "hotspot2": 0,
     "complete": [Script_KybarsTeeth_Puzzle2_Complete, Script_KybarsTeeth_Puzzle2_SecretComplete],
     "title": "Cave In",
-    "points": 3,
+    "points": 2,
     "challenge": enter_locations,
     "title2": "Spelunker",
-    "points2": 3,
+    "points2": 2,
     "desc2": "Complete the second Kybar's Teeth puzzle after stepping on all 3 grey moons in the middle of the first room",
     "locations": [[15, 52], [12, 58], [18, 56]]
 })
@@ -1271,10 +1271,10 @@ add_puzzle("Kybar's Teeth", 3, {
     "hotspot2": 0,
     "complete": [Script_KybarsTeeth_Puzzle3_Complete],
     "title": "More Parmlagas",
-    "points": 3,
+    "points": 2,
     "challenge": parmalag_avoid,
     "title2": "No Time for Chit-Chat",
-    "points2": 4,
+    "points2": 3,
     "parmalags": 8,
     "parmalags_move": 8,
 })
@@ -1283,7 +1283,7 @@ add_puzzle("Kybar's Teeth", 4, {
     "hotspot2": 0,
     "complete": [Script_KybarsTeeth_Puzzle4_Complete],
     "title": "Stop With the Parmalags",
-    "points": 3,
+    "points": 5,
     "challenge": speedrun,
     "title2": "Dancing with the Parmalags",
     "points2": 3,
@@ -1295,10 +1295,10 @@ add_puzzle("Kybar's Teeth", 5, {
     "hotspot2": 0,
     "complete": [Script_KybarsTeeth_Puzzle5_Complete],
     "title": "Moga Stampede",
-    "points": 3,
+    "points": 5,
     "challenge": speedrun,
     "title2": "Moga Pup, Moba What?",
-    "points2": 3,
+    "points2": 5,
     "time": "3 seconds",
     "frames": 3*60 - 1
 })
@@ -1307,7 +1307,7 @@ add_puzzle("Bograth", 1, {
     "hotspot2": 0,
     "complete": [Script_Bograth_Puzzle1_Complete],
     "title": "Trekking Through Mud",
-    "points": 3,
+    "points": 2,
     "challenge": parmalag_avoid,
     "title2": "Keeping Dry",
     "points2": 4,
@@ -1319,7 +1319,7 @@ add_puzzle("Bograth", 2, {
     "hotspot2": 0,
     "complete": [Script_Bograth_Puzzle2_Complete, Script_Bograth_Puzzle2_SecretComplete],
     "title": "Bogged Down",
-    "points": 3,
+    "points": 4,
     "challenge": dresh2_mud,
     "title2": "Conserving Energy",
     "points2": 4,
@@ -1330,10 +1330,10 @@ add_puzzle("Bograth", 3, {
     "hotspot2": 0,
     "complete": [Script_Bograth_Puzzle3_Complete],
     "title": "Need a Wash",
-    "points": 3,
+    "points": 2,
     "challenge": parmalag_avoid,
     "title2": "Tight Corners",
-    "points2": 4,
+    "points2": 3,
     "parmalags": 8,
     "parmalags_move": 8,
 })
@@ -1342,10 +1342,10 @@ add_puzzle("Bograth", 4, {
     "hotspot2": 0,
     "complete": [Script_Bograth_Puzzle4_Complete],
     "title": "Ganges",
-    "points": 3,
+    "points": 5,
     "challenge": dresh4_switch,
     "title2": "Genius",
-    "points2": 4,
+    "points2": 5,
     "triggers": 4
 })
 add_puzzle("Bograth", 5, {
@@ -1353,7 +1353,7 @@ add_puzzle("Bograth", 5, {
     "hotspot2": 0,
     "complete": [Script_Bograth_Puzzle5_Complete],
     "title": "Parmesan Cheese",
-    "points": 3,
+    "points": 5,
     "challenge": speedrun,
     "title2": "Grating Fast",
     "points2": 3,
@@ -1365,7 +1365,7 @@ add_puzzle("Paradwyn", 1, {
     "hotspot2": 0,
     "complete": [Script_Paradwyn_Puzzle1_Complete],
     "title": "Paradise Lost",
-    "points": 3,
+    "points": 4,
     "challenge": speedrun,
     "title2": "Star Trek",
     "points2": 3,
@@ -1377,7 +1377,7 @@ add_puzzle("Paradwyn", 2, {
     "hotspot2": 0,
     "complete": [Script_Paradwyn_Puzzle2_Complete],
     "title": "Headache",
-    "points": 3,
+    "points": 4,
     "challenge": speedrun,
     "title2": "Memorized",
     "points2": 3,
@@ -1402,10 +1402,10 @@ add_puzzle("Paradwyn", 4, {
     "hotspot2": 0,
     "complete": [Script_Paradwyn_Puzzle4_Complete],
     "title": "Ancient Guardian",
-    "points": 3,
+    "points": 10,
     "challenge": kicks,
     "title2": "Nimble Link",
-    "points2": 3,
+    "points2": 4,
     "kicks": 25
 })
 add_puzzle("Paradwyn", 5, {
@@ -1413,7 +1413,7 @@ add_puzzle("Paradwyn", 5, {
     "hotspot2": 0,
     "complete": [Script_Paradwyn_Puzzle5_Complete],
     "title": "A Whirl of Fun",
-    "points": 3,
+    "points": 5,
     "challenge": speedrun,
     "title2": "Vortex Man",
     "points2": 3,
@@ -1425,10 +1425,10 @@ add_puzzle("Core", 1, {
     "hotspot2": 0,
     "complete": [Script_Core_Puzzle1_Complete],
     "title": "Endless Pit",
-    "points": 3,
+    "points": 5,
     "challenge": speedrun,
     "title2": "Tightrope Walking",
-    "points2": 3,
+    "points2": 4,
     "time": "20 seconds",
     "frames": 20*60 - 1
 })
@@ -1437,10 +1437,10 @@ add_puzzle("Core", 2, {
     "hotspot2": 0,
     "complete": [Script_Core_Puzzle2_Complete, Script_Core_Puzzle2_SecretComplete],
     "title": "Why Do I Keep Falling?",
-    "points": 3,
+    "points": 5,
     "challenge": core_switches,
     "title2": "Again and Again",
-    "points2": 3,
+    "points2": 5,
     "desc2": "Complete the second Core puzzle whilst pressing no more than 10 switches",
     "switches": 9, // We are only counting the 9 outside switches, and not the 5 inner ones since we know they will all be pressed once
     "presses": 5, // We are only counting the outside switches since the 5 inner ones must all be pressed once and can only be pressed once
@@ -1450,7 +1450,7 @@ add_puzzle("Core", 3, {
     "hotspot2": 0,
     "complete": [Script_Core_Puzzle3_Complete],
     "title": "Game of Chance",
-    "points": 3,
+    "points": 5,
     "challenge": speedrun,
     "title2": "Card Counter",
     "points2": 3,
@@ -1462,18 +1462,18 @@ add_puzzle("Core", 4, {
     "hotspot2": 0,
     "complete": [Script_Core_Puzzle4_Complete],
     "title": "Final Level",
-    "points": 3,
+    "points": 10,
     "challenge": core4,
     "title2": "Don't Skip the Dishes",
     "desc2": "Complete the fourth Core puzzle after lighting up all 5 beacons on the right side of the map",
-    "points2": 3,
+    "points2": 5,
 })
 add_puzzle("Core", 5, {
     "hotspot": Hotspot_Core_Puzzle5,
     "hotspot2": 0,
     "complete": [Script_Core_Puzzle5_Complete],
     "title": "Agram's Puzzle",
-    "points": 3,
+    "points": 25,
     "challenge": no_challenge, // Let's be nice, no challenge for this one
 })
 
@@ -1535,7 +1535,7 @@ credits(
 )
 credits(
     "Good Ending 3: Lower Taxes",
-    25, "Beat the Core after finding 0-4 Wand pieces, then finding all the Crystal pieces. If prompted, choose to pursue the Wand first",
+    10, "Beat the Core after finding 0-4 Wand pieces, then finding all the Crystal pieces. If prompted, choose to pursue the Wand first",
     ending_core_backup
 )
 credits(
@@ -1611,12 +1611,11 @@ rich_presence_conditional_display(
 )
 rich_presence_conditional_display(
     wHotspot_Table == Hotspot_Bograth_Puzzle24 && is_Bograth4 == 1,
-    "{0} Location: Bograth Puzzle 4. Puzzle Progress: {1}/66. Secret Puzzles Completed: {2}/11. Ormagon Quest: {3} Turret High Score: {4}.", // Hardcode Bograth Puzzle 4 as it shares hotspots with Puzzle 2
+    "{0} Location: Bograth Puzzle 4. Puzzle Progress: {1}/66. Secret Puzzles Completed: {2}/11. Ormagon Quest: {3}", // Hardcode Bograth Puzzle 4 as it shares hotspots with Puzzle 2
     rich_presence_lookup("Quest", xStaffOfHyrenQuest, staff_of_hyren_lookup, "???"),
     rich_presence_value("Puzzles", puzzle_progress(), "VALUE"),
     rich_presence_value("Puzzles", secrets_progress(), "VALUE"),
-    rich_presence_lookup("Ormagon", ormagon_progress(), ormagon_lookup, "???"),
-    rich_presence_value("TurretRecord", xTurret_HighScore, "VALUE")
+    rich_presence_lookup("Ormagon", ormagon_progress(), ormagon_lookup, "???")
 )
 rich_presence_display(
     "{0} Location: {1}. Puzzle Progress: {2}/66. Secret Puzzles Completed: {3}/11. Ormagon Quest: {4}",
