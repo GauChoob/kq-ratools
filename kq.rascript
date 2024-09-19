@@ -360,15 +360,14 @@ xBits_KybarsTeeth = bitcount(0xA039)
 xBits_Bograth = bitcount(0xA03A)
 xBits_Paradwyn = bitcount(0xA03B)
 xBits_Core = bitcount(0xA03C)
+xBits_CoreSecret = bit4(0xA03C)
 _puzzle_progress = [xBits_Orothe, xBits_Arderial, xBits_Naroom, xBits_Underneath, xBits_Cald, xBits_Weave, xBits_dResh, xBits_KybarsTeeth, xBits_Bograth, xBits_Paradwyn, xBits_Core]
 function puzzle_progress() =>
     sum_of(_puzzle_progress, bits => bits)
 
 
-xBits_Secrets_1 = bitcount(0xA04A)
-xBits_Secrets_2 = bitcount(0xA04B)
 function secrets_progress() =>
-    xBits_Secrets_1 + xBits_Secrets_2
+    xOverworld1_SecretsCompleted + xOverworld2_SecretsCompleted + xBits_CoreSecret
 //////////
 // Misc //
 //////////
